@@ -8,6 +8,7 @@
   },
   "scripts": {
     "voices": "node scripts/generate_voices.js",
+    "images": "node scripts/generate_images.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

@@ -110,11 +110,51 @@ node scripts/post_fx.js voices/raw/3_3.5_ARKADI.mp3 voices/3_3.5_ARKADI.mp3
 필터 식은 `scripts/post_fx.js`의 `DEEP_REVERB_FILTER` 상수에 정의되어 있습니다
 (`aecho` 다중 탭 + `lowpass` + 볼륨 보정).
 
+### 5. 장면 이미지 생성 (`scripts/generate_images.js`)
+
+`script/parsed.json`의 각 scene에 대해 DALL-E 3로 1장씩 합성한 결과를
+`images/scene_{N}.png`에 저장합니다. 같은 폴더에 `scene_{N}.prompt.txt`로
+실제 전송된 프롬프트와 DALL-E의 `revised_prompt`도 함께 기록되어, 결과가
+마음에 안 들 때 어디를 손볼지 추적하기 쉽습니다.
+
+```bash
+# 전체 scene 생성 (기본: 1792x1024, hd, 흑백+선택적 컬러)
+node scripts/generate_images.js
+# 또는
+npm run images
+
+# 비용 없이 프롬프트만 미리 확인
+node scripts/generate_images.js --dry-run
+
+# 특정 scene만
+node scripts/generate_images.js --scene 1
+
+# 처음 2개만 (스타일 검증용)
+node scripts/generate_images.js --limit 2
+
+# 비용 절감 (절반 가격)
+node scripts/generate_images.js --quality standard
+```
+
+#### 옵션 요약
+
+| 옵션 | 설명 |
+| --- | --- |
+| (없음) | 모든 scene을 처리, 이미 PNG가 있으면 스킵 |
+| `--scene N` | `scene_id`가 N인 장면만 처리 |
+| `--limit N` | 처음 N개 scene만 처리 |
+| `--quality hd\|standard` | DALL-E 3 품질 (기본: config의 `hd`) |
+| `--dry-run` | API 미호출, 프롬프트만 stdout 출력 |
+
+스타일·해상도·품질 기본값은 `config/image_style.json`에서 관리합니다.
+톤이 마음에 안 들면 `style_prefix`를 수정하고, 해당 PNG만 삭제 후 다시
+실행하면 됩니다.
+
 ## 진행 상황 메모
 
 - [x] 레포 초기 구조 셋업
 - [x] TTS 음성 생성 파이프라인
 - [x] 후처리 이펙트(`scripts/post_fx.js`) ffmpeg `aecho` 다단 체인 구현
-- [ ] 장면별 이미지 생성 파이프라인
+- [x] 장면별 이미지 생성 파이프라인 (DALL-E 3, 1792×1024, 흑백+선택적 컬러)
 - [ ] Remotion 합성 프로젝트 초기화
 - [ ] 프로토타입 클립 제작
