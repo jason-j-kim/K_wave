@@ -150,11 +150,45 @@ node scripts/generate_images.js --quality standard
 톤이 마음에 안 들면 `style_prefix`를 수정하고, 해당 PNG만 삭제 후 다시
 실행하면 됩니다.
 
+### 6. 타이밍 계산 (`scripts/compute_timing.js`)
+
+`voices/*.mp3`의 길이를 ffprobe로 측정해 Remotion 합성에 쓸
+`script/timing.json`을 생성합니다. 라인 사이 0.3초, 장면 사이 1.0초의
+호흡 갭이 들어갑니다.
+
+```bash
+npm run timing
+# 또는
+node scripts/compute_timing.js
+```
+
+음성을 새로 만들거나 지웠을 때 다시 실행하세요.
+
+### 7. 영상 합성 (Remotion)
+
+```bash
+cd remotion
+npm install      # 최초 1회
+npm run render   # → remotion/out/prototype.mp4 생성
+```
+
+`npm run dev`로 Remotion Studio 브라우저 미리보기도 가능합니다
+(timeline에서 라인별 타이밍을 시각적으로 확인하고 자막/이미지 위치 튜닝).
+
+#### 전체 파이프라인 순서 요약
+
+1. `npm run voices` — TTS 합성
+2. `npm run images` — 장면 이미지 생성
+3. `npm run timing` — 타이밍 JSON 갱신
+4. `cd remotion && npm run render` — mp4 출력
+
 ## 진행 상황 메모
 
 - [x] 레포 초기 구조 셋업
 - [x] TTS 음성 생성 파이프라인
 - [x] 후처리 이펙트(`scripts/post_fx.js`) ffmpeg `aecho` 다단 체인 구현
 - [x] 장면별 이미지 생성 파이프라인 (DALL-E 3, 1792×1024, 흑백+선택적 컬러)
-- [ ] Remotion 합성 프로젝트 초기화
-- [ ] 프로토타입 클립 제작
+- [x] 타이밍 계산 스크립트 (ffprobe 기반)
+- [x] Remotion 합성 프로젝트 초기화 (Phase 1: 정적 컷 + 자막)
+- [ ] 프로토타입 클립 렌더링 및 검수
+- [ ] Phase 2: Ken Burns, stage_direction 오버레이, 장면 전환 페이드

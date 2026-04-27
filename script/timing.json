@@ -1,0 +1,11 @@
+{
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "gap_between_lines_sec": 0.3,
+  "gap_between_scenes_sec": 1.0,
+  "total_duration_sec": 0,
+  "total_duration_frames": 1,
+  "scenes": [],
+  "_note": "이 파일은 `node scripts/compute_timing.js`로 자동 생성됩니다. 위 placeholder는 Remotion이 음성/이미지 합성 전에도 번들되도록 하기 위한 최소 스키마입니다."
+}

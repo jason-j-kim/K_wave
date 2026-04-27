@@ -150,6 +150,10 @@ images/**/*.jpg
 **/*.mp4
 **/*.mov
 
+# Remotion 렌더 결과물 / 캐시
+remotion/out/
+remotion/.cache/
+
 # .gitkeep 등 폴더 유지 파일은 커밋 (위 패턴은 폴더가 아니라 미디어 확장자만 무시)
 !**/.gitkeep
 
