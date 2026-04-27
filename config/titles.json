@@ -1,0 +1,21 @@
+{
+  "intro": {
+    "duration_sec": 6,
+    "fade_in_sec": 1.0,
+    "fade_out_sec": 1.0,
+    "title": "아르카디의 침묵",
+    "subtitle": "김재준 作"
+  },
+  "outro": {
+    "duration_sec": 5,
+    "fade_in_sec": 1.0,
+    "fade_out_sec": 1.5,
+    "title": "끝",
+    "subtitle": "원작 김재준 · AI 영상 합성"
+  },
+  "ambience": {
+    "enabled": true,
+    "file": "audio/ambience.mp3",
+    "volume": 0.12
+  }
+}

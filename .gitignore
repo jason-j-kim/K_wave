@@ -147,6 +147,8 @@ voices/**/*.mp3
 voices/**/*.wav
 images/**/*.png
 images/**/*.jpg
+audio/**/*.mp3
+audio/**/*.wav
 **/*.mp4
 **/*.mov
 

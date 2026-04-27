@@ -150,21 +150,32 @@ node scripts/generate_images.js --quality standard
 톤이 마음에 안 들면 `style_prefix`를 수정하고, 해당 PNG만 삭제 후 다시
 실행하면 됩니다.
 
-### 6. 타이밍 계산 (`scripts/compute_timing.js`)
+### 6. 앰비언스 생성 (`scripts/generate_ambience.js`)
+
+빈 소극장의 룸톤을 ffmpeg `anoisesrc`로 합성해 `audio/ambience.mp3`로
+저장합니다. 30초 루프이며, Remotion에서 영상 전체에 걸쳐 작은 볼륨으로
+깔립니다.
+
+```bash
+npm run ambience
+```
+
+볼륨/사용 여부는 `config/titles.json`의 `ambience` 섹션에서 조정합니다.
+
+### 7. 타이밍 계산 (`scripts/compute_timing.js`)
 
 `voices/*.mp3`의 길이를 ffprobe로 측정해 Remotion 합성에 쓸
 `script/timing.json`을 생성합니다. 라인 사이 0.3초, 장면 사이 1.0초의
-호흡 갭이 들어갑니다.
+호흡 갭이 들어가고, `config/titles.json`의 인트로/아웃트로/앰비언스
+설정도 함께 반영됩니다.
 
 ```bash
 npm run timing
-# 또는
-node scripts/compute_timing.js
 ```
 
-음성을 새로 만들거나 지웠을 때 다시 실행하세요.
+음성·앰비언스를 새로 만들거나 인트로 텍스트를 바꿨을 때 다시 실행하세요.
 
-### 7. 영상 합성 (Remotion)
+### 8. 영상 합성 (Remotion)
 
 ```bash
 cd remotion
@@ -179,8 +190,9 @@ npm run render   # → remotion/out/prototype.mp4 생성
 
 1. `npm run voices` — TTS 합성
 2. `npm run images` — 장면 이미지 생성
-3. `npm run timing` — 타이밍 JSON 갱신
-4. `cd remotion && npm run render` — mp4 출력
+3. `npm run ambience` — 앰비언스 룸톤 합성 (1회)
+4. `npm run timing` — 타이밍 JSON 갱신 (인트로/아웃트로/앰비언스 반영)
+5. `cd remotion && npm run render` — mp4 출력
 
 ## 진행 상황 메모
 
@@ -191,4 +203,5 @@ npm run render   # → remotion/out/prototype.mp4 생성
 - [x] 타이밍 계산 스크립트 (ffprobe 기반, dialogue + stage_direction)
 - [x] Remotion 합성 프로젝트 (Phase 1: 정적 컷 + 자막)
 - [x] Phase 2: Ken Burns 줌·드리프트, stage_direction 이탤릭 오버레이, 장면 페이드 인/아웃, ARKADI 리버브 명료도 튜닝
+- [x] 인트로/아웃트로 타이틀 카드 + 배경 앰비언스 (ffmpeg anoisesrc 합성)
 - [ ] 프로토타입 클립 렌더링 및 검수
