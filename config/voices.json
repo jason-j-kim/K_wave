@@ -1,0 +1,5 @@
+{
+  "K":      { "voice": "echo",  "speed": 1.0,  "post_fx": null },
+  "M":      { "voice": "onyx",  "speed": 0.9,  "post_fx": null },
+  "ARKADI": { "voice": "fable", "speed": 0.75, "post_fx": "deep_reverb" }
+}

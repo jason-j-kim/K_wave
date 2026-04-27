@@ -141,3 +141,17 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Project: AI 영상 생성물 (재현 가능, 용량 큼)
+voices/*.mp3
+voices/*.wav
+images/*.png
+images/*.jpg
+**/*.mp4
+**/*.mov
+
+# .gitkeep 등 폴더 유지 파일은 커밋 (위 패턴은 폴더가 아니라 미디어 확장자만 무시)
+!**/.gitkeep
+
+# Secrets
+.env
