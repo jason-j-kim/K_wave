@@ -50,11 +50,24 @@ cp .env.example .env
 npm install
 ```
 
+ARKADI 라인은 `aecho` 기반 deep reverb 후처리를 거치므로 **ffmpeg이 PATH에
+등록되어 있어야 합니다.** Windows는 https://www.gyan.dev/ffmpeg/builds/ 의
+essentials 빌드를 받아 `bin` 폴더를 PATH에 추가하면 됩니다.
+설치 확인: `ffmpeg -version`
+
 ### 3. 음성 생성 (`scripts/generate_voices.js`)
 
-`script/parsed.json`의 모든 `dialogue` 라인을 OpenAI `tts-1-hd`로 합성하여
-`voices/{scene_id}_{line_id}_{speaker}.mp3` 형식으로 저장합니다.
-이미 존재하는 파일은 자동으로 건너뜁니다(재실행 시 비용 절약).
+`script/parsed.json`의 모든 `dialogue` 라인을 OpenAI `tts-1-hd`로 합성합니다.
+파이프라인은 두 단계로 동작합니다.
+
+1. **TTS 원본**을 `voices/raw/{scene_id}_{line_id}_{speaker}.mp3`에 저장
+2. `config/voices.json`에서 `post_fx`가 지정된 경우 ffmpeg으로 후처리하여
+   **최종본**을 `voices/{scene_id}_{line_id}_{speaker}.mp3`로 저장
+   (지정되지 않은 경우 원본을 그대로 복사)
+
+최종본이 이미 존재하면 전체 단계를 건너뜁니다. 리버브 톤만 다시 튜닝하고
+싶다면 최종본만 삭제하고 재실행하세요 — 원본이 보존되어 있어 OpenAI
+호출 없이 ffmpeg만 다시 돕니다.
 
 ```bash
 # 전체 dialogue 합성
@@ -86,11 +99,22 @@ node scripts/generate_voices.js --scene 2 --speaker K --limit 3
 
 음색·속도·후처리 매핑은 `config/voices.json`에서 관리합니다.
 
+### 4. 단일 파일 후처리 (`scripts/post_fx.js`)
+
+리버브 파라미터를 빠르게 실험하고 싶을 때 단일 파일에 직접 적용할 수 있습니다.
+
+```bash
+node scripts/post_fx.js voices/raw/3_3.5_ARKADI.mp3 voices/3_3.5_ARKADI.mp3
+```
+
+필터 식은 `scripts/post_fx.js`의 `DEEP_REVERB_FILTER` 상수에 정의되어 있습니다
+(`aecho` 다중 탭 + `lowpass` + 볼륨 보정).
+
 ## 진행 상황 메모
 
 - [x] 레포 초기 구조 셋업
-- [x] TTS 음성 생성 파이프라인 (스크립트 작성, 실행 대기)
-- [ ] 후처리 이펙트(`scripts/post_fx.js`) ffmpeg 명령 구현
+- [x] TTS 음성 생성 파이프라인
+- [x] 후처리 이펙트(`scripts/post_fx.js`) ffmpeg `aecho` 다단 체인 구현
 - [ ] 장면별 이미지 생성 파이프라인
 - [ ] Remotion 합성 프로젝트 초기화
 - [ ] 프로토타입 클립 제작

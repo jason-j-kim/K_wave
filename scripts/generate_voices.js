@@ -16,11 +16,13 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const OpenAI = require('openai');
+const { applyDeepReverb, isFfmpegAvailable } = require('./post_fx');
 
 const ROOT = path.resolve(__dirname, '..');
 const PARSED_PATH = path.join(ROOT, 'script', 'parsed.json');
 const VOICES_CONFIG_PATH = path.join(ROOT, 'config', 'voices.json');
 const OUTPUT_DIR = path.join(ROOT, 'voices');
+const RAW_DIR = path.join(OUTPUT_DIR, 'raw');
 
 const TTS_MODEL = 'tts-1-hd';
 const TTS_SPEED_MIN = 0.25;
@@ -71,24 +73,32 @@ async function synthesizeLine(openai, { scene_id, line }, voicesConfig) {
   }
 
   const fileName = `${scene_id}_${line.line_id}_${speakerKey}.mp3`;
-  const outputPath = path.join(OUTPUT_DIR, fileName);
+  const finalPath = path.join(OUTPUT_DIR, fileName);
+  const rawPath = path.join(RAW_DIR, fileName);
 
-  if (fs.existsSync(outputPath)) {
-    return { fileName, skipped: true };
+  if (fs.existsSync(finalPath)) {
+    return { fileName, status: 'skip' };
   }
 
-  const response = await openai.audio.speech.create({
-    model: TTS_MODEL,
-    voice: config.voice,
-    input: line.text,
-    speed: clampSpeed(config.speed),
-    response_format: 'mp3',
-  });
+  if (!fs.existsSync(rawPath)) {
+    const response = await openai.audio.speech.create({
+      model: TTS_MODEL,
+      voice: config.voice,
+      input: line.text,
+      speed: clampSpeed(config.speed),
+      response_format: 'mp3',
+    });
+    const buffer = Buffer.from(await response.arrayBuffer());
+    fs.writeFileSync(rawPath, buffer);
+  }
 
-  const buffer = Buffer.from(await response.arrayBuffer());
-  fs.writeFileSync(outputPath, buffer);
+  if (config.post_fx === 'deep_reverb') {
+    await applyDeepReverb(rawPath, finalPath);
+    return { fileName, status: 'fx' };
+  }
 
-  return { fileName, skipped: false };
+  fs.copyFileSync(rawPath, finalPath);
+  return { fileName, status: 'ok' };
 }
 
 async function main() {
@@ -99,9 +109,7 @@ async function main() {
     process.exit(1);
   }
 
-  if (!fs.existsSync(OUTPUT_DIR)) {
-    fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-  }
+  fs.mkdirSync(RAW_DIR, { recursive: true });
 
   const parsed = JSON.parse(fs.readFileSync(PARSED_PATH, 'utf8'));
   const voicesConfig = JSON.parse(fs.readFileSync(VOICES_CONFIG_PATH, 'utf8'));
@@ -119,6 +127,18 @@ async function main() {
   if (args.speaker) console.log(`[INFO] --speaker ${args.speaker}`);
   if (args.limit !== null) console.log(`[INFO] --limit ${args.limit}`);
 
+  const needsFfmpeg = targets.some(({ line }) => {
+    const cfg = voicesConfig[line.speaker];
+    return cfg && cfg.post_fx === 'deep_reverb';
+  });
+  if (needsFfmpeg && !(await isFfmpegAvailable())) {
+    console.warn(
+      '[WARN] post_fx가 필요한 라인이 있지만 ffmpeg을 PATH에서 찾지 못했습니다. ' +
+      '해당 라인은 실패로 표시됩니다. https://www.gyan.dev/ffmpeg/builds/ 에서 ' +
+      'essentials 빌드 설치 후 새 터미널에서 다시 실행하세요.'
+    );
+  }
+
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
   let ok = 0;
@@ -130,9 +150,12 @@ async function main() {
     const tag = `[${i + 1}/${targets.length}] scene=${item.scene_id} line=${item.line.line_id} speaker=${item.line.speaker}`;
     try {
       const result = await synthesizeLine(openai, item, voicesConfig);
-      if (result.skipped) {
+      if (result.status === 'skip') {
         console.log(`${tag} SKIP (이미 존재) -> ${result.fileName}`);
         skipped++;
+      } else if (result.status === 'fx') {
+        console.log(`${tag} OK+FX (deep_reverb) -> ${result.fileName}`);
+        ok++;
       } else {
         console.log(`${tag} OK -> ${result.fileName}`);
         ok++;

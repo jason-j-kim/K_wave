@@ -143,10 +143,10 @@ vite.config.ts.timestamp-*
 .vite/
 
 # Project: AI 영상 생성물 (재현 가능, 용량 큼)
-voices/*.mp3
-voices/*.wav
-images/*.png
-images/*.jpg
+voices/**/*.mp3
+voices/**/*.wav
+images/**/*.png
+images/**/*.jpg
 **/*.mp4
 **/*.mov
 
