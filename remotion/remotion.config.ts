@@ -7,3 +7,8 @@ Config.setPublicDir("../");
 
 Config.setVideoImageFormat("jpeg");
 Config.setOverwriteOutput(true);
+
+// 기본 concurrency를 2로 제한 — 자막/이미지/오디오가 한 프레임에 같이
+// 올라가는 합성이라 코어 수만큼 띄우면 크롬이 OOM으로 죽는다.
+// CLI에서 --concurrency=N 으로 덮어쓸 수 있다.
+Config.setConcurrency(2);
