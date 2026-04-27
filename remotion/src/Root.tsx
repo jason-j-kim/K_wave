@@ -1,7 +1,10 @@
 import React from "react";
 import { Composition } from "remotion";
 import { Play } from "./Play";
-import timing from "../../script/timing.json";
+import type { Timing } from "./types";
+import timingData from "../../script/timing.json";
+
+const timing = timingData as unknown as Timing;
 
 export const Root: React.FC = () => {
   return (

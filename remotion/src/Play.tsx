@@ -1,7 +1,10 @@
 import React from "react";
 import { AbsoluteFill, Sequence } from "remotion";
 import { SceneShot } from "./components/SceneShot";
-import timing from "../../script/timing.json";
+import type { Timing } from "./types";
+import timingData from "../../script/timing.json";
+
+const timing = timingData as unknown as Timing;
 
 export const Play: React.FC = () => {
   const fps = timing.fps;

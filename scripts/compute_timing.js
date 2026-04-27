@@ -5,6 +5,10 @@
  * voices/ 폴더의 mp3 길이를 ffprobe로 측정하여 Remotion 합성에 쓸
  * script/timing.json을 생성한다.
  *
+ * Phase 2: stage_direction 라인도 포함시킨다 (음성 없음, 화면 중앙
+ * 이탤릭 오버레이로 표시). duration은 텍스트 길이 기반 추정값
+ * (0.12 sec/char, 2.5~6s clamp + 0.5s 여유).
+ *
  * 출력 구조:
  *   {
  *     fps, width, height,
@@ -15,7 +19,9 @@
  *         scene_id, title, setting, image,
  *         start_sec, duration_sec,
  *         lines: [
- *           { line_id, speaker, text, audio,
+ *           { type: "dialogue", line_id, speaker, text, audio,
+ *             start_sec_in_scene, duration_sec },
+ *           { type: "stage_direction", line_id, speaker: null, text,
  *             start_sec_in_scene, duration_sec }
  *         ]
  *       }
@@ -37,6 +43,18 @@ const WIDTH = 1920;
 const HEIGHT = 1080;
 const GAP_BETWEEN_LINES_SEC = 0.3;
 const GAP_BETWEEN_SCENES_SEC = 1.0;
+
+// stage_direction 표시 시간 추정
+const STAGE_DIR_SEC_PER_CHAR = 0.12;
+const STAGE_DIR_MIN_SEC = 2.5;
+const STAGE_DIR_MAX_SEC = 6.0;
+const STAGE_DIR_TAIL_SEC = 0.5; // 페이드 여유
+
+function estimateStageDirectionDuration(text) {
+  const chars = (text || '').length;
+  const raw = chars * STAGE_DIR_SEC_PER_CHAR + STAGE_DIR_TAIL_SEC;
+  return Math.min(STAGE_DIR_MAX_SEC, Math.max(STAGE_DIR_MIN_SEC, raw));
+}
 
 function getDurationSec(filePath) {
   return new Promise((resolve, reject) => {
@@ -102,30 +120,45 @@ async function main() {
     };
 
     let inSceneCursor = 0;
+    let dialogueCount = 0;
 
     for (const line of sc.lines) {
-      if (line.type !== 'dialogue') continue;
-      const audioName = `${sc.scene_id}_${line.line_id}_${line.speaker}.mp3`;
-      const audioPath = path.join(VOICES_DIR, audioName);
+      if (line.type === 'dialogue') {
+        const audioName = `${sc.scene_id}_${line.line_id}_${line.speaker}.mp3`;
+        const audioPath = path.join(VOICES_DIR, audioName);
 
-      if (!fs.existsSync(audioPath)) {
-        console.warn(`[WARN] 음성 파일 없음, 스킵: ${audioName}`);
-        missing++;
-        continue;
+        if (!fs.existsSync(audioPath)) {
+          console.warn(`[WARN] 음성 파일 없음, 스킵: ${audioName}`);
+          missing++;
+          continue;
+        }
+
+        const dur = await getDurationSec(audioPath);
+
+        sceneEntry.lines.push({
+          type: 'dialogue',
+          line_id: line.line_id,
+          speaker: line.speaker,
+          text: line.text,
+          audio: audioName,
+          start_sec_in_scene: inSceneCursor,
+          duration_sec: dur,
+        });
+
+        inSceneCursor += dur + GAP_BETWEEN_LINES_SEC;
+        dialogueCount++;
+      } else if (line.type === 'stage_direction') {
+        const dur = estimateStageDirectionDuration(line.text);
+        sceneEntry.lines.push({
+          type: 'stage_direction',
+          line_id: line.line_id,
+          speaker: null,
+          text: line.text,
+          start_sec_in_scene: inSceneCursor,
+          duration_sec: dur,
+        });
+        inSceneCursor += dur + GAP_BETWEEN_LINES_SEC;
       }
-
-      const dur = await getDurationSec(audioPath);
-
-      sceneEntry.lines.push({
-        line_id: line.line_id,
-        speaker: line.speaker,
-        text: line.text,
-        audio: audioName,
-        start_sec_in_scene: inSceneCursor,
-        duration_sec: dur,
-      });
-
-      inSceneCursor += dur + GAP_BETWEEN_LINES_SEC;
     }
 
     // 마지막 라인 뒤의 line-gap은 빼고 scene duration 산정
@@ -134,8 +167,8 @@ async function main() {
       inSceneCursor - GAP_BETWEEN_LINES_SEC,
     );
 
-    if (sceneEntry.lines.length === 0) {
-      console.warn(`[WARN] scene ${sc.scene_id}: dialogue 라인 0개, 스킵`);
+    if (dialogueCount === 0 && sceneEntry.lines.length === 0) {
+      console.warn(`[WARN] scene ${sc.scene_id}: 라인 0개, 스킵`);
       continue;
     }
 

@@ -188,7 +188,7 @@ npm run render   # → remotion/out/prototype.mp4 생성
 - [x] TTS 음성 생성 파이프라인
 - [x] 후처리 이펙트(`scripts/post_fx.js`) ffmpeg `aecho` 다단 체인 구현
 - [x] 장면별 이미지 생성 파이프라인 (DALL-E 3, 1792×1024, 흑백+선택적 컬러)
-- [x] 타이밍 계산 스크립트 (ffprobe 기반)
-- [x] Remotion 합성 프로젝트 초기화 (Phase 1: 정적 컷 + 자막)
+- [x] 타이밍 계산 스크립트 (ffprobe 기반, dialogue + stage_direction)
+- [x] Remotion 합성 프로젝트 (Phase 1: 정적 컷 + 자막)
+- [x] Phase 2: Ken Burns 줌·드리프트, stage_direction 이탤릭 오버레이, 장면 페이드 인/아웃, ARKADI 리버브 명료도 튜닝
 - [ ] 프로토타입 클립 렌더링 및 검수
-- [ ] Phase 2: Ken Burns, stage_direction 오버레이, 장면 전환 페이드

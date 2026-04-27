@@ -14,15 +14,15 @@
 
 const { spawn } = require('child_process');
 
-// 다중 탭 에코로 잔향을 흉내내고, lowpass로 거리감을 더한다.
-// 파라미터 의미:
+// 다중 탭 에코로 잔향을 흉내내고, lowpass로 약간의 거리감만 더한다.
+// Phase 2 튜닝: 대사 명료도를 우선해 wet 신호를 줄였다.
 //   aecho=in_gain:out_gain:delays(ms)|...:decays|...
-//   - delays  60 / 180 / 500 / 1200 ms 4개 탭
-//   - decays  0.5 / 0.4 / 0.3 / 0.2 (멀어질수록 감쇠)
-//   lowpass=f=3500  3.5kHz 이상 컷 → 멀리서 들리는 듯한 톤
-//   volume=1.1      잔향 합산 후 약간 보강
+//   - in_gain  0.9     원본(dry)을 더 강하게 통과
+//   - delays   60/150/400 ms  3개 탭 (가장 긴 1200ms는 제거)
+//   - decays   0.30/0.20/0.12  잔향 꼬리 약화
+//   lowpass=f=4500  4.5kHz 컷 → 약간의 거리감만, 대사는 또렷
 const DEEP_REVERB_FILTER =
-  'aecho=0.8:0.88:60|180|500|1200:0.5|0.4|0.3|0.2,lowpass=f=3500,volume=1.1';
+  'aecho=0.9:0.9:60|150|400:0.30|0.20|0.12,lowpass=f=4500,volume=1.0';
 
 /**
  * 입력 음성에 깊은 리버브를 적용해 출력 경로에 저장한다.
