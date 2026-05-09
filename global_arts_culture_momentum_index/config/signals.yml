@@ -1,0 +1,34 @@
+Global_Media_Attention:
+  source_examples: [GDELT]
+  signal_class: attention
+  flow_type: monthly_flow
+
+Wikipedia_Attention:
+  source_examples: [Wikipedia Pageviews]
+  signal_class: attention
+  flow_type: monthly_flow
+
+Book_Discoverability:
+  source_examples: [Google Books, Open Library]
+  signal_class: discoverability
+  flow_type: catalog_stock
+
+Museum_Collection_Visibility:
+  source_examples: [Met, Art Institute of Chicago]
+  signal_class: institutional
+  flow_type: catalog_stock
+
+Cultural_Heritage_Database_Visibility:
+  source_examples: [Europeana, Met (for heritage), Art Institute of Chicago (for heritage)]
+  signal_class: institutional
+  flow_type: catalog_stock
+
+Performing_Event_Visibility:
+  source_examples: [Ticketmaster Discovery]
+  signal_class: institutional
+  flow_type: monthly_flow
+
+Wikidata_Knowledge_Graph_Visibility:
+  source_examples: [Wikidata SPARQL]
+  signal_class: institutional
+  flow_type: catalog_stock

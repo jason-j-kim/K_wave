@@ -1,0 +1,57 @@
+GAC_Attention:
+  korean_name: 주목지수
+  signals:
+    - Global_Media_Attention
+    - Wikipedia_Attention
+  domains:
+    - Music
+    - Series_OTT
+    - Film
+    - Webtoon_Digital_Fiction
+    - Games_Esports
+    - Publishing_Literature
+    - Visual_Arts
+    - Performing_Arts
+    - Design_Craft
+    - Heritage_Language
+  domain_weight: equal
+
+GAC_Discoverability:
+  korean_name: 발견가능성지수
+  signals:
+    - Book_Discoverability
+  domains:
+    - Publishing_Literature
+    - Webtoon_Digital_Fiction
+  domain_weight: equal
+
+GAC_Institutional:
+  korean_name: 제도적가시성지수
+  signals:
+    - Museum_Collection_Visibility
+    - Cultural_Heritage_Database_Visibility
+    - Performing_Event_Visibility
+    - Wikidata_Knowledge_Graph_Visibility
+  domains:
+    - Visual_Arts
+    - Performing_Arts
+    - Design_Craft
+    - Heritage_Language
+  domain_weight: equal
+  notes: |
+    Most signals in this sub-index are STOCK (catalog-level) data with
+    little or no monthly variation. Month-over-month changes here mainly
+    reflect re-ranking among countries, not real cultural momentum.
+
+GACMI_Composite:
+  korean_name: 통합지수
+  default_weights:
+    GAC_Attention: 0.3334
+    GAC_Discoverability: 0.3333
+    GAC_Institutional: 0.3333
+  notes: |
+    Default composite uses equal 1/3 weighting across the three sub-indices.
+    Each sub-index measures a distinct construct. Users are strongly
+    encouraged to read the three sub-indices separately and only use the
+    composite as a summary indicator.
+    Composite weights are configurable.

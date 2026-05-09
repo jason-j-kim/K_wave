@@ -1,0 +1,69 @@
+Music:
+  code: Music
+  name: Music
+  korean_name: 음악
+  domain_type: platform_culture
+  participates_in_subindices: [GAC_Attention]
+
+Series_OTT:
+  code: Series_OTT
+  name: Drama and OTT Series
+  korean_name: 드라마·OTT
+  domain_type: platform_culture
+  participates_in_subindices: [GAC_Attention]
+
+Film:
+  code: Film
+  name: Film
+  korean_name: 영화
+  domain_type: platform_culture
+  participates_in_subindices: [GAC_Attention]
+
+Webtoon_Digital_Fiction:
+  code: Webtoon_Digital_Fiction
+  name: Webtoon and Digital Fiction
+  korean_name: 웹툰·웹소설
+  domain_type: platform_culture
+  participates_in_subindices: [GAC_Attention, GAC_Discoverability]
+
+Games_Esports:
+  code: Games_Esports
+  name: Games and Esports
+  korean_name: 게임·e스포츠
+  domain_type: platform_culture
+  participates_in_subindices: [GAC_Attention]
+
+Publishing_Literature:
+  code: Publishing_Literature
+  name: Publishing and Literature
+  korean_name: 출판·문학
+  domain_type: arts_culture
+  participates_in_subindices: [GAC_Attention, GAC_Discoverability]
+
+Visual_Arts:
+  code: Visual_Arts
+  name: Visual Arts
+  korean_name: 시각예술
+  domain_type: arts_culture
+  participates_in_subindices: [GAC_Attention, GAC_Institutional]
+
+Performing_Arts:
+  code: Performing_Arts
+  name: Performing Arts
+  korean_name: 공연예술
+  domain_type: arts_culture
+  participates_in_subindices: [GAC_Attention, GAC_Institutional]
+
+Design_Craft:
+  code: Design_Craft
+  name: Design and Craft
+  korean_name: 디자인·공예
+  domain_type: arts_culture
+  participates_in_subindices: [GAC_Attention, GAC_Institutional]
+
+Heritage_Language:
+  code: Heritage_Language
+  name: Heritage and Language
+  korean_name: 전통문화·언어
+  domain_type: heritage_culture
+  participates_in_subindices: [GAC_Attention, GAC_Institutional]

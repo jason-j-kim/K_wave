@@ -1,0 +1,109 @@
+gdelt:
+  enabled: true
+  requires_api_key: false
+  source_confidence_level: medium
+  produces_signal: Global_Media_Attention
+  applicable_domains:
+    - Music
+    - Series_OTT
+    - Film
+    - Webtoon_Digital_Fiction
+    - Games_Esports
+    - Publishing_Literature
+    - Visual_Arts
+    - Performing_Arts
+    - Design_Craft
+    - Heritage_Language
+
+wikipedia:
+  enabled: true
+  requires_api_key: false
+  source_confidence_level: medium
+  produces_signal: Wikipedia_Attention
+  applicable_domains:
+    - Music
+    - Series_OTT
+    - Film
+    - Webtoon_Digital_Fiction
+    - Games_Esports
+    - Publishing_Literature
+    - Visual_Arts
+    - Performing_Arts
+    - Design_Craft
+    - Heritage_Language
+
+google_books:
+  enabled: true
+  requires_api_key: false
+  source_confidence_level: medium
+  produces_signal: Book_Discoverability
+  applicable_domains: [Publishing_Literature, Webtoon_Digital_Fiction]
+
+openlibrary:
+  enabled: true
+  requires_api_key: false
+  source_confidence_level: medium
+  produces_signal: Book_Discoverability
+  applicable_domains: [Publishing_Literature, Webtoon_Digital_Fiction]
+
+wikidata:
+  enabled: true
+  requires_api_key: false
+  source_confidence_level: medium
+  produces_signal: Wikidata_Knowledge_Graph_Visibility
+  applicable_domains: [Visual_Arts, Performing_Arts, Design_Craft, Heritage_Language]
+
+met:
+  enabled: true
+  requires_api_key: false
+  source_confidence_level: medium
+  produces_signal_per_domain:
+    Visual_Arts: Museum_Collection_Visibility
+    Design_Craft: Museum_Collection_Visibility
+    Heritage_Language: Cultural_Heritage_Database_Visibility
+  applicable_domains: [Visual_Arts, Design_Craft, Heritage_Language]
+
+artic:
+  enabled: true
+  requires_api_key: false
+  source_confidence_level: medium
+  produces_signal_per_domain:
+    Visual_Arts: Museum_Collection_Visibility
+    Design_Craft: Museum_Collection_Visibility
+    Heritage_Language: Cultural_Heritage_Database_Visibility
+  applicable_domains: [Visual_Arts, Design_Craft, Heritage_Language]
+
+europeana:
+  enabled: false
+  requires_api_key: true
+  env_key: EUROPEANA_API_KEY
+  source_confidence_level: medium
+  produces_signal: Cultural_Heritage_Database_Visibility
+  applicable_domains: [Visual_Arts, Design_Craft, Heritage_Language]
+
+ticketmaster:
+  enabled: false
+  requires_api_key: true
+  env_key: TICKETMASTER_API_KEY
+  source_confidence_level: low_to_medium
+  produces_signal: Performing_Event_Visibility
+  applicable_domains: [Performing_Arts]
+
+youtube:
+  enabled: false
+  requires_api_key: true
+  env_key: YOUTUBE_API_KEY
+  source_confidence_level: low
+  exploratory_only: true
+  applicable_domains:
+    - Music
+    - Series_OTT
+    - Film
+    - Webtoon_Digital_Fiction
+    - Games_Esports
+
+source_confidence_multipliers:
+  high: 1.00
+  medium: 1.00
+  low_to_medium: 0.70
+  low: 0.50

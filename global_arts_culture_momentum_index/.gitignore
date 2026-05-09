@@ -1,0 +1,33 @@
+# Generated artifacts (kept out of version control; .gitkeep preserves dirs)
+data/raw/*/*.json
+data/processed/*.csv
+data/processed/*.parquet
+data/output/*.csv
+data/output/*.parquet
+data/logs/*.log
+data/logs/*.log.*
+reports/monthly/*.md
+reports/monthly/*.png
+reports/monthly/*.html
+
+# Environment
+.env
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+.coverage
+.tox/
+
+# Editors / OS
+.DS_Store
+.vscode/
+.idea/

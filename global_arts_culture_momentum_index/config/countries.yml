@@ -1,0 +1,158 @@
+KR:
+  iso2: KR
+  iso3: KOR
+  name: Korea
+  adjective: Korean
+  demonym: Korean
+  aliases:
+    - Korea
+    - South Korea
+    - Korean
+    - K-culture
+    - K culture
+  query_terms:
+    - Korean
+    - Korea
+    - South Korean
+
+JP:
+  iso2: JP
+  iso3: JPN
+  name: Japan
+  adjective: Japanese
+  demonym: Japanese
+  aliases:
+    - Japan
+    - Japanese
+    - J-culture
+  query_terms:
+    - Japanese
+    - Japan
+
+US:
+  iso2: US
+  iso3: USA
+  name: United States
+  adjective: American
+  demonym: American
+  aliases:
+    - United States
+    - USA
+    - U.S.
+    - American
+  query_terms:
+    - American
+    - United States
+    - U.S.
+
+GB:
+  iso2: GB
+  iso3: GBR
+  name: United Kingdom
+  adjective: British
+  demonym: British
+  aliases:
+    - United Kingdom
+    - UK
+    - Britain
+    - British
+    - England
+  query_terms:
+    - British
+    - United Kingdom
+    - UK
+
+FR:
+  iso2: FR
+  iso3: FRA
+  name: France
+  adjective: French
+  demonym: French
+  aliases:
+    - France
+    - French
+  query_terms:
+    - French
+    - France
+
+DE:
+  iso2: DE
+  iso3: DEU
+  name: Germany
+  adjective: German
+  demonym: German
+  aliases:
+    - Germany
+    - German
+    - Deutschland
+  query_terms:
+    - German
+    - Germany
+
+IT:
+  iso2: IT
+  iso3: ITA
+  name: Italy
+  adjective: Italian
+  demonym: Italian
+  aliases:
+    - Italy
+    - Italian
+  query_terms:
+    - Italian
+    - Italy
+
+ES:
+  iso2: ES
+  iso3: ESP
+  name: Spain
+  adjective: Spanish
+  demonym: Spanish
+  aliases:
+    - Spain
+    - Spanish
+    - España
+  query_terms:
+    - Spanish
+    - Spain
+
+IN:
+  iso2: IN
+  iso3: IND
+  name: India
+  adjective: Indian
+  demonym: Indian
+  aliases:
+    - India
+    - Indian
+  query_terms:
+    - Indian
+    - India
+
+BR:
+  iso2: BR
+  iso3: BRA
+  name: Brazil
+  adjective: Brazilian
+  demonym: Brazilian
+  aliases:
+    - Brazil
+    - Brazilian
+    - Brasil
+  query_terms:
+    - Brazilian
+    - Brazil
+
+MX:
+  iso2: MX
+  iso3: MEX
+  name: Mexico
+  adjective: Mexican
+  demonym: Mexican
+  aliases:
+    - Mexico
+    - Mexican
+    - México
+  query_terms:
+    - Mexican
+    - Mexico

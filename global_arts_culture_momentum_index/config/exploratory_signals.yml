@@ -1,0 +1,22 @@
+YouTube_Platform_Engagement:
+  enabled: false
+  requires_api_key: true
+  env_key: YOUTUBE_API_KEY
+  metrics:
+    - youtube_view_count
+    - youtube_like_count
+    - youtube_comment_count
+    - youtube_video_count
+  applicable_domains:
+    - Music
+    - Series_OTT
+    - Film
+    - Webtoon_Digital_Fiction
+    - Games_Esports
+  notes: |
+    YouTube data is collected when YOUTUBE_API_KEY is available, but is
+    NEVER included in any of the three sub-indices or the composite GACMI.
+    It is reported separately in an exploratory annex of the monthly report.
+    Reason: search-based YouTube counts represent cumulative query
+    engagement, not exact monthly consumption, and cannot be normalized
+    into a clean monthly flow.

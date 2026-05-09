@@ -1,0 +1,54 @@
+normalization_method: percentile_rank   # alternative: robust_z_score
+
+GAC_Attention:
+  Music:
+    Global_Media_Attention: 0.55
+    Wikipedia_Attention: 0.45
+  Series_OTT:
+    Global_Media_Attention: 0.55
+    Wikipedia_Attention: 0.45
+  Film:
+    Global_Media_Attention: 0.55
+    Wikipedia_Attention: 0.45
+  Webtoon_Digital_Fiction:
+    Global_Media_Attention: 0.55
+    Wikipedia_Attention: 0.45
+  Games_Esports:
+    Global_Media_Attention: 0.55
+    Wikipedia_Attention: 0.45
+  Publishing_Literature:
+    Global_Media_Attention: 0.55
+    Wikipedia_Attention: 0.45
+  Visual_Arts:
+    Global_Media_Attention: 0.55
+    Wikipedia_Attention: 0.45
+  Performing_Arts:
+    Global_Media_Attention: 0.60
+    Wikipedia_Attention: 0.40
+  Design_Craft:
+    Global_Media_Attention: 0.55
+    Wikipedia_Attention: 0.45
+  Heritage_Language:
+    Global_Media_Attention: 0.45
+    Wikipedia_Attention: 0.55
+
+GAC_Discoverability:
+  Publishing_Literature:
+    Book_Discoverability: 1.00
+  Webtoon_Digital_Fiction:
+    Book_Discoverability: 1.00
+
+GAC_Institutional:
+  Visual_Arts:
+    Museum_Collection_Visibility: 0.65
+    Wikidata_Knowledge_Graph_Visibility: 0.35
+  Performing_Arts:
+    Performing_Event_Visibility: 0.50
+    Wikidata_Knowledge_Graph_Visibility: 0.50
+  Design_Craft:
+    Museum_Collection_Visibility: 0.45
+    Cultural_Heritage_Database_Visibility: 0.25
+    Wikidata_Knowledge_Graph_Visibility: 0.30
+  Heritage_Language:
+    Cultural_Heritage_Database_Visibility: 0.55
+    Wikidata_Knowledge_Graph_Visibility: 0.45
