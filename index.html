@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BTS Wire</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root { --accent: #BB86FC; }
+  * { -webkit-font-smoothing: antialiased; }
+  body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif; font-weight: 300; color: #111; letter-spacing: -0.01em; }
+  body[lang="ja"], body[lang="zh"] { font-family: 'Pretendard', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Microsoft YaHei', sans-serif; }
+  .accent { color: var(--accent); }
+  .bg-accent { background-color: var(--accent); }
+  .border-accent { border-color: var(--accent); }
+  .scrollbar-thin::-webkit-scrollbar { width: 3px; height: 3px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 2px; }
+  .fade-in { animation: fadeIn .25s ease-out; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
+  details > summary { list-style: none; cursor: pointer; }
+  details > summary::-webkit-details-marker { display: none; }
+  details[open] .acc-icon { transform: rotate(45deg); }
+  .acc-icon { transition: transform .2s ease; }
+  .shorts-card { aspect-ratio: 9/16; }
+  .video-card { aspect-ratio: 16/9; }
+  .num-feat { font-feature-settings: "tnum"; }
+  .hover-lift { transition: transform .15s ease; }
+  .hover-lift:hover { transform: translateY(-1px); }
+  .frame-bar { transition: filter .2s; }
+  .frame-bar:hover { filter: brightness(1.1); }
+  .tabs-scroll { scrollbar-width: none; }
+  .tabs-scroll::-webkit-scrollbar { display: none; }
+  .lang-tab { padding: 2px 6px; font-size: 10px; letter-spacing: 0.05em; transition: color .15s; }
+</style>
+</head>
+<body lang="ko" class="bg-white">
+
+<!-- HEADER -->
+<header class="border-b border-neutral-100 sticky top-0 bg-white/90 backdrop-blur z-30">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8 py-4 flex items-center justify-between gap-3">
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="w-2 h-2 rounded-full bg-accent shrink-0"></div>
+      <h1 class="text-lg font-medium tracking-tight truncate">
+        <span data-i18n="siteName">BTS Wire</span><span class="accent font-light"> · </span><span class="font-light text-neutral-600" data-i18n="siteSub"></span>
+      </h1>
+    </div>
+    <div class="flex items-center gap-1 shrink-0">
+      <button data-lang="ko" class="lang-tab">KO</button>
+      <span class="text-neutral-200 text-[9px]">|</span>
+      <button data-lang="en" class="lang-tab">EN</button>
+      <span class="text-neutral-200 text-[9px]">|</span>
+      <button data-lang="ja" class="lang-tab">JA</button>
+      <span class="text-neutral-200 text-[9px]">|</span>
+      <button data-lang="zh" class="lang-tab">中</button>
+      <span class="text-neutral-200 text-[9px]">|</span>
+      <button data-lang="es" class="lang-tab">ES</button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-5 lg:px-8 py-6 lg:py-10">
+
+  <!-- INTRO -->
+  <div class="mb-10 lg:mb-14 max-w-3xl">
+    <p class="text-xs uppercase tracking-[0.25em] text-neutral-400 mb-3" data-i18n="introEyebrow"></p>
+    <h2 class="text-2xl lg:text-3xl font-light leading-snug tracking-tight mb-3">
+      <span data-i18n="introTitleA"></span> <br class="hidden sm:block">
+      <span class="text-neutral-400" data-i18n="introTitleB"></span>
+    </h2>
+    <p class="text-sm text-neutral-500 leading-relaxed" data-i18n="introBody"></p>
+  </div>
+
+  <!-- ============ INDEX BOARD ============ -->
+  <section class="mb-14 lg:mb-20 border-y border-neutral-100 py-8 lg:py-10">
+    <div class="flex items-end justify-between mb-7 gap-3">
+      <div>
+        <h3 class="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-2" data-i18n="indexHeader"></h3>
+        <p class="text-sm text-neutral-600 max-w-xl" data-i18n="indexSub"></p>
+      </div>
+      <div class="text-right shrink-0">
+        <p class="text-[10px] text-neutral-400 uppercase tracking-wider mb-0.5" data-i18n="indexDate"></p>
+        <p class="text-[11px] text-neutral-700 num-feat font-medium">2026.05.09 (FRI)</p>
+        <p class="text-[10px] text-neutral-400 num-feat mt-0.5" data-i18n="indexTime"></p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-10 mb-9 pb-9 border-b border-neutral-100">
+      <div class="lg:col-span-2">
+        <p class="text-[10px] uppercase tracking-wider text-neutral-400 mb-1" data-i18n="indexBCI"></p>
+        <p class="text-5xl lg:text-6xl font-extralight tracking-tight num-feat" id="bciValue">—</p>
+        <p class="text-sm mt-2 num-feat" id="bciChange">—</p>
+      </div>
+      <div class="lg:col-span-3">
+        <svg id="bciChart" class="w-full h-20" viewBox="0 0 200 60" preserveAspectRatio="none"></svg>
+        <div class="grid grid-cols-4 gap-3 mt-4 text-xs">
+          <div><p class="text-[10px] text-neutral-400 uppercase tracking-wider" data-i18n="indexOpen"></p><p class="num-feat font-medium mt-0.5" id="bciOpen">—</p></div>
+          <div><p class="text-[10px] text-neutral-400 uppercase tracking-wider" data-i18n="indexHigh"></p><p class="num-feat font-medium mt-0.5" id="bciHigh">—</p></div>
+          <div><p class="text-[10px] text-neutral-400 uppercase tracking-wider" data-i18n="indexLow"></p><p class="num-feat font-medium mt-0.5" id="bciLow">—</p></div>
+          <div><p class="text-[10px] text-neutral-400 uppercase tracking-wider" data-i18n="indexVolume"></p><p class="num-feat font-medium mt-0.5" id="bciVolume">—</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-9">
+      <p class="text-[10px] uppercase tracking-wider text-neutral-400 mb-4" data-i18n="indexRegional"></p>
+      <div id="regionalIndices" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3"></div>
+    </div>
+
+    <div class="mb-9">
+      <p class="text-[10px] uppercase tracking-wider text-neutral-400 mb-4">Sector Indices · 6 frames</p>
+      <div id="sectorIndices" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3"></div>
+    </div>
+
+    <div>
+      <div class="flex items-end justify-between mb-4">
+        <p class="text-[10px] uppercase tracking-wider text-neutral-400" data-i18n="indexMember"></p>
+        <span class="text-[10px] text-neutral-400" data-i18n="indexMemberSub"></span>
+      </div>
+      <div id="memberStocks" class="border-y border-neutral-100"></div>
+    </div>
+  </section>
+
+  <!-- ============ FRAME COMPASS ============ -->
+  <section class="mb-14 lg:mb-20 border-b border-neutral-100 pb-8 lg:pb-10">
+    <div class="flex items-end justify-between mb-2">
+      <h3 class="text-xs uppercase tracking-[0.2em] text-neutral-400" data-i18n="frameHeader"></h3>
+      <span class="text-[10px] text-neutral-400" data-i18n="frameMeta"></span>
+    </div>
+    <p class="text-sm text-neutral-600 mb-7 max-w-2xl" data-i18n="frameSub"></p>
+    <div id="frameLegend" class="flex flex-wrap gap-x-4 gap-y-2 mb-6 text-[11px] text-neutral-600"></div>
+    <div id="frameCompass" class="space-y-3 mb-7"></div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 pt-6 border-t border-neutral-100">
+      <div><p class="text-[10px] uppercase tracking-wider accent mb-2" data-i18n="noteLabel1"></p><p class="text-sm text-neutral-700 leading-relaxed" data-i18n="frameNote1"></p></div>
+      <div><p class="text-[10px] uppercase tracking-wider accent mb-2" data-i18n="noteLabel2"></p><p class="text-sm text-neutral-700 leading-relaxed" data-i18n="frameNote2"></p></div>
+      <div><p class="text-[10px] uppercase tracking-wider accent mb-2" data-i18n="noteLabel3"></p><p class="text-sm text-neutral-700 leading-relaxed" data-i18n="frameNote3"></p></div>
+    </div>
+  </section>
+
+  <!-- ============ MEMBER SPOTLIGHT ============ -->
+  <section class="mb-14 lg:mb-20 border-b border-neutral-100 pb-8 lg:pb-10">
+    <div class="flex items-end justify-between mb-2">
+      <h3 class="text-xs uppercase tracking-[0.2em] text-neutral-400" data-i18n="memberHeader"></h3>
+      <span class="text-[10px] text-neutral-400" data-i18n="memberMeta"></span>
+    </div>
+    <p class="text-sm text-neutral-600 mb-7 max-w-2xl" data-i18n="memberSub"></p>
+    <div id="memberLegend" class="flex flex-wrap gap-x-4 gap-y-2 mb-6 text-[11px] text-neutral-600"></div>
+    <div id="memberSpotlight" class="space-y-3 mb-7"></div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 pt-6 border-t border-neutral-100">
+      <div><p class="text-[10px] uppercase tracking-wider accent mb-2" data-i18n="noteLabel1"></p><p class="text-sm text-neutral-700 leading-relaxed" data-i18n="memberNote1"></p></div>
+      <div><p class="text-[10px] uppercase tracking-wider accent mb-2" data-i18n="noteLabel2"></p><p class="text-sm text-neutral-700 leading-relaxed" data-i18n="memberNote2"></p></div>
+      <div><p class="text-[10px] uppercase tracking-wider accent mb-2" data-i18n="noteLabel3"></p><p class="text-sm text-neutral-700 leading-relaxed" data-i18n="memberNote3"></p></div>
+    </div>
+  </section>
+
+  <!-- ============ TIME LAG ============ -->
+  <section class="mb-14 lg:mb-20 border-b border-neutral-100 pb-8 lg:pb-10">
+    <div class="flex items-end justify-between mb-2">
+      <h3 class="text-xs uppercase tracking-[0.2em] text-neutral-400" data-i18n="timeLagHeader"></h3>
+      <span class="text-[10px] text-neutral-400" data-i18n="timeLagMeta"></span>
+    </div>
+    <p class="text-sm text-neutral-600 mb-9 max-w-2xl" data-i18n="timeLagSub"></p>
+    <div id="eventTimeline" class="space-y-7 mb-10"></div>
+    <div class="border-t border-neutral-100 pt-7 mb-7">
+      <div class="flex items-end justify-between mb-4">
+        <p class="text-[10px] uppercase tracking-wider text-neutral-400" data-i18n="timeLagOriginFreq"></p>
+        <span class="text-[10px] text-neutral-400" data-i18n="timeLagOriginCount"></span>
+      </div>
+      <div id="originFreq" class="space-y-2"></div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 pt-6 border-t border-neutral-100">
+      <div><p class="text-[10px] uppercase tracking-wider accent mb-2" data-i18n="noteLabel1"></p><p class="text-sm text-neutral-700 leading-relaxed" data-i18n="timeLagNote1"></p></div>
+      <div><p class="text-[10px] uppercase tracking-wider accent mb-2" data-i18n="noteLabel2"></p><p class="text-sm text-neutral-700 leading-relaxed" data-i18n="timeLagNote2"></p></div>
+      <div><p class="text-[10px] uppercase tracking-wider accent mb-2" data-i18n="noteLabel3"></p><p class="text-sm text-neutral-700 leading-relaxed" data-i18n="timeLagNote3"></p></div>
+    </div>
+  </section>
+
+  <!-- ============ TEXTURE ============ -->
+  <section class="mb-14 lg:mb-20 border-b border-neutral-100 pb-8 lg:pb-10">
+    <div class="flex items-end justify-between mb-2">
+      <h3 class="text-xs uppercase tracking-[0.2em] text-neutral-400" data-i18n="textureHeader"></h3>
+      <span class="text-[10px] text-neutral-400" data-i18n="textureMeta"></span>
+    </div>
+    <p class="text-sm text-neutral-600 mb-9 max-w-2xl" data-i18n="textureSub"></p>
+    <div class="overflow-x-auto -mx-5 lg:-mx-8 px-5 lg:px-8 mb-9">
+      <div class="min-w-[620px]">
+        <div id="textureHeader" class="grid grid-cols-[150px_repeat(6,1fr)] gap-2 mb-2 text-[10px] uppercase tracking-wider text-neutral-400 border-b border-neutral-100 pb-2"></div>
+        <div id="textureHeatmap" class="space-y-1"></div>
+      </div>
+    </div>
+    <div class="border-t border-neutral-100 pt-7 mb-7">
+      <p class="text-[10px] uppercase tracking-wider text-neutral-400 mb-4" data-i18n="textureSig"></p>
+      <div id="signatureWords" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 pt-6 border-t border-neutral-100">
+      <div><p class="text-[10px] uppercase tracking-wider accent mb-2" data-i18n="noteLabel1"></p><p class="text-sm text-neutral-700 leading-relaxed" data-i18n="textureNote1"></p></div>
+      <div><p class="text-[10px] uppercase tracking-wider accent mb-2" data-i18n="noteLabel2"></p><p class="text-sm text-neutral-700 leading-relaxed" data-i18n="textureNote2"></p></div>
+      <div><p class="text-[10px] uppercase tracking-wider accent mb-2" data-i18n="noteLabel3"></p><p class="text-sm text-neutral-700 leading-relaxed" data-i18n="textureNote3"></p></div>
+    </div>
+  </section>
+
+  <!-- ============ 2-COL ============ -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+    <section>
+      <div class="flex items-end justify-between mb-5">
+        <h2 class="text-xs uppercase tracking-[0.2em] text-neutral-400" data-i18n="newsHeader"></h2>
+        <span class="text-[10px] text-neutral-400" data-i18n="newsSort"></span>
+      </div>
+      <div id="regionTabs" class="flex gap-1 mb-5 border-b border-neutral-100 overflow-x-auto tabs-scroll"></div>
+      <div id="newsList" class="space-y-3 max-h-[760px] overflow-y-auto scrollbar-thin pr-2"></div>
+    </section>
+    <section>
+      <div class="flex items-end justify-between mb-5">
+        <h2 class="text-xs uppercase tracking-[0.2em] text-neutral-400" data-i18n="videoHeader"></h2>
+        <span class="text-[10px] text-neutral-400" data-i18n="videoYT"></span>
+      </div>
+      <div id="hotVideos" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10"></div>
+      <div class="flex items-end justify-between mb-4">
+        <h2 class="text-xs uppercase tracking-[0.2em] text-neutral-400" data-i18n="shortsHeader"></h2>
+        <span class="text-[10px] text-neutral-400" data-i18n="shortsVertical"></span>
+      </div>
+      <div id="shortsGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
+    </section>
+  </div>
+
+  <!-- ============ ARCHIVE ============ -->
+  <section class="mt-16 lg:mt-24 border-t border-neutral-100 pt-12">
+    <div class="flex items-end justify-between mb-8">
+      <div>
+        <h2 class="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-2" data-i18n="archiveLabel"></h2>
+        <p class="text-2xl font-light tracking-tight"><span data-i18n="archiveTitle"></span> <span class="accent">2013 — 2026</span></p>
+      </div>
+    </div>
+    <div id="archive" class="divide-y divide-neutral-100 border-y border-neutral-100"></div>
+  </section>
+
+  <footer class="mt-20 pt-8 border-t border-neutral-100 text-xs text-neutral-400 leading-relaxed">
+    <p data-i18n="footer1"></p>
+    <p class="mt-1" data-i18n="footer2"></p>
+  </footer>
+</main>
+
+<!-- VIDEO MODAL -->
+<div id="videoModal" class="hidden fixed inset-0 bg-black/70 z-50 items-center justify-center p-4 fade-in">
+  <div class="relative w-full max-w-4xl">
+    <button id="closeModal" class="absolute -top-10 right-0 text-white text-2xl leading-none">&times;</button>
+    <div class="aspect-video bg-black"><iframe id="videoFrame" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+    <p id="videoCaption" class="text-white/80 text-sm mt-3 font-light"></p>
+  </div>
+</div>
+
+<script>
+// ========== I18N ==========
+const I18N = {
+  ko: {
+    siteName: 'BTS Wire', siteSub: '메타 언론',
+    introEyebrow: 'Editorial · Meta-Press',
+    introTitleA: '같은 BTS, 여섯 개의 호명.',
+    introTitleB: '권역별로 어떻게 다르게 다뤄지는가.',
+    introBody: '한국·미국·라틴아메리카·유럽·아프리카·아시아 6개 권역의 24시간 보도를 6개 프레임으로 분류했습니다. 댓글–조회수 비율을 함께 표시해 단순 노출량과 담론의 밀도를 분리해 읽도록 설계되었습니다.',
+    indexHeader: 'Daily Discourse Index',
+    indexSub: 'BTS 미디어 담론을 정량화한 일일 지수. 매일 자정(KST) 발표 · 보도량·참여도·시간 가중치 종합. 기준값 1000.00 (2025-01-01).',
+    indexDate: '발표 일자', indexTime: '00:00 KST 발표', indexBCI: 'BCI · BTS Composite Index',
+    indexOpen: 'Open', indexHigh: 'High', indexLow: 'Low', indexVolume: 'Volume',
+    indexRegional: 'Regional Indices · 6 권역', indexMember: 'Member Stocks · 7 종목', indexMemberSub: '언급량(volume) 기반',
+    frameHeader: 'Frame Compass · 24h', frameMeta: '6 regions × 6 frames',
+    frameSub: '권역별 헤드라인을 산업·음악·스타일·팬덤·사회·가십 6개 프레임으로 분류한 분포.',
+    frameTop: 'top',
+    noteLabel1: 'Editorial Note 1', noteLabel2: 'Editorial Note 2', noteLabel3: 'Editorial Note 3',
+    frameNote1: '한국은 산업, 라틴아메리카는 팬덤, 유럽은 사회·정치로 BTS를 호명한다 — 권역마다 BTS는 다른 사물이 된다.',
+    frameNote2: '아시아(한국 외)는 스타일·산업이 절반 — 한류를 \'미적 자본\'으로 수용하는 패턴.',
+    frameNote3: '아프리카는 음악이 1위 — 산업·외교 프레임이 약하고 음악적 가치 평가가 우선되는 유일 권역.',
+    memberHeader: 'Member Spotlight · 24h', memberMeta: '6 regions × 7 members',
+    memberSub: '권역별 멤버 7인의 호명 분포. 어느 권역이 누구를 BTS의 얼굴로 호명하는가.',
+    memberNote1: '라틴아메리카는 V + Jimin 비주얼 라인이 45% — 6개 권역 중 가장 편향된 분포. 라틴 미디어는 BTS를 시각 아이콘으로 호명한다.',
+    memberNote2: '유럽은 RM이 단독 1위(20%) — 지식인 이미지를 갖춘 리더에 대한 유럽 매체의 선호. 한국은 RM·Jin·V가 균형.',
+    memberNote3: '미국·아프리카는 Jung Kook이 1위(20%·21%) — 음악·차트 중심 수용 권역의 공통 패턴. 아시아는 V(22%) 단독 1위.',
+    timeLagHeader: 'Time Lag Tracker · 7d', timeLagMeta: '5 events × 6 regions',
+    timeLagSub: '주요 사건이 권역 간 어떻게 흐르는가. 첫 보도 시점을 기준(0h)으로, 다른 권역들이 따라잡는 데 걸린 시차.',
+    timeLagOriginLabel: '진원 ·', timeLagOriginFreq: 'Origin Frequency · 진원지 빈도', timeLagOriginCount: '5건 중',
+    timeLagNote1: '한국은 5건 중 3건의 진원지(60%) — K-pop 의제 생태계의 시발점. 그러나 글로벌 차트는 미국이, 패션·문화는 유럽이 진원지로 작동한다. 의제 유형별 분업.',
+    timeLagNote2: '라틴아메리카는 5건 모두 진원지 0건 — Member Spotlight에서 가장 활발한 팬덤 권역으로 드러났음에도 의제 생산은 부재. 수용 강도와 생산 권력은 분리되어 있다.',
+    timeLagNote3: '아프리카는 모든 사건에서 가장 늦은 권역 — 평균 6.2시간 지연. 글로벌 K-pop 미디어 회로의 주변부에 위치.',
+    textureHeader: 'Linguistic Texture · 7d', textureMeta: '4 metrics × 6 regions',
+    textureSub: '보도 언어 자체의 결. 같은 사건도 권역마다 다른 어휘·문장 길이·감정 톤으로 다뤄진다. 모든 지표는 0–100 정규화 인덱스.',
+    textureMetric: 'Metric', textureSig: 'Signature Expressions · 권역별 시그니처 표현',
+    textureNote1: '아시아 매체의 한국어 음차 비율은 68 — \'カムバック·完全体\' 같은 한자권 음차가 토착어를 밀어냄. 유럽은 28로 가장 낮음. 자국어 번역(\'phénomène\', \'Wirtschaftsmacht\')으로 BTS를 자기화한다.',
+    textureNote2: '라틴아메리카는 평가어 71·감정어 78로 두 항목 모두 1위 — 권역 중 가장 정동적 언어. Member Spotlight의 V·Jimin 편애와도 일치하는 패턴.',
+    textureNote3: '한국·아시아는 압축도 78·72로 \'함축형 헤드라인\', 유럽은 35로 \'서술형 헤드라인\'. 한자권의 명사 압축 vs 유럽 매체의 분석문체라는 언어 구조적 차이.',
+    newsHeader: 'News · 24h', newsSort: '댓글순 정렬', newsViews: '조회', newsComments: '댓글', newsDensity: '밀도',
+    videoHeader: 'Hot Videos · 24h', videoYT: 'YouTube', shortsHeader: 'Shorts', shortsVertical: '세로형',
+    archiveLabel: 'Archive', archiveTitle: '연도별 디스코그래피',
+    footer1: '© 2026 BTS Wire · 본 페이지는 더미 데이터에 기반한 인터페이스 프로토타입입니다.',
+    footer2: '미디어 텍스트의 양적 집계가 곧 비평이 아니라는 점을 전제로 설계되었습니다.',
+    regionKR: '한국', regionUS: '미국', regionLATAM: '라틴아메리카', regionEU: '유럽', regionAF: '아프리카', regionASIA: '아시아 (한국 외)', regionASIA_short: '아시아',
+    frameIndustry: '산업', frameMusic: '음악', frameSociety: '사회·정치', frameStyle: '스타일', frameFandom: '팬덤', frameGossip: '가십',
+    metricCompact: '헤드라인 압축도', metricCompactDesc: '압축적 ↔ 서술적',
+    metricEvaluative: '평가어 밀도', metricEvaluativeDesc: '객관 ↔ 평가·해석',
+    metricKoreanLoan: '한국어 음차 비율', metricKoreanLoanDesc: 'カムバック / regreso',
+    metricAffective: '감정어 밀도', metricAffectiveDesc: '차분 ↔ 정동적',
+    eventReunion: 'BTS 멤버 전원 제대', eventComeback: 'HYBE, 6월 컴백 공식 발표',
+    eventSeven: '정국 \'Seven\' 빌보드 차트 재진입', eventDior: '지민, 파리 패션위크 디올 1주년',
+    eventIndigo: 'RM \'인디고\' 디럭스 에디션 발매'
+  },
+  en: {
+    siteName: 'BTS Wire', siteSub: 'Meta-Press',
+    introEyebrow: 'Editorial · Meta-Press',
+    introTitleA: 'One BTS, six namings.',
+    introTitleB: 'How each region treats them differently.',
+    introBody: 'A 6-frame analysis of 24-hour BTS coverage across Korea, the US, Latin America, Europe, Africa, and Asia. Comment-to-view ratios are shown alongside raw metrics to separate visibility from discourse density.',
+    indexHeader: 'Daily Discourse Index',
+    indexSub: 'A daily quantified index of BTS media discourse. Published every midnight (KST). Weighted by coverage volume, engagement, and time. Base value 1000.00 (2025-01-01).',
+    indexDate: 'Publication date', indexTime: 'Published 00:00 KST', indexBCI: 'BCI · BTS Composite Index',
+    indexOpen: 'Open', indexHigh: 'High', indexLow: 'Low', indexVolume: 'Volume',
+    indexRegional: 'Regional Indices · 6 regions', indexMember: 'Member Stocks · 7 stocks', indexMemberSub: 'Mention volume basis',
+    frameHeader: 'Frame Compass · 24h', frameMeta: '6 regions × 6 frames',
+    frameSub: 'Distribution of headlines by region across 6 frames: industry, music, society, style, fandom, gossip.',
+    frameTop: 'top',
+    noteLabel1: 'Editorial Note 1', noteLabel2: 'Editorial Note 2', noteLabel3: 'Editorial Note 3',
+    frameNote1: 'Korea names BTS through industry, Latin America through fandom, Europe through society — in each region, BTS becomes a different object.',
+    frameNote2: 'Asia (excl. Korea) gives style and industry half the share — receiving the K-wave as "aesthetic capital".',
+    frameNote3: 'Africa places music first — the only region where industry and diplomacy frames are weak and musical evaluation comes first.',
+    memberHeader: 'Member Spotlight · 24h', memberMeta: '6 regions × 7 members',
+    memberSub: 'Regional distribution of mentions across the 7 members. Which region treats whom as the face of BTS.',
+    memberNote1: 'Latin America gives the V + Jimin "visual line" 45% — the most skewed distribution. Latin media names BTS through visual icons.',
+    memberNote2: 'Europe places RM alone at the top (20%) — the European press\'s preference for an intellectual leader. Korea balances RM, Jin, and V.',
+    memberNote3: 'US and Africa place Jung Kook first (20%, 21%) — the shared pattern of music- and chart-centric regions. Asia gives V (22%) the sole top spot.',
+    timeLagHeader: 'Time Lag Tracker · 7d', timeLagMeta: '5 events × 6 regions',
+    timeLagSub: 'How major events flow across regions. Lag from first coverage (0h), measuring how long each region takes to catch up.',
+    timeLagOriginLabel: 'Origin ·', timeLagOriginFreq: 'Origin Frequency', timeLagOriginCount: 'of 5',
+    timeLagNote1: 'Korea is the origin of 3 of 5 events (60%) — the starting point of the K-pop agenda ecosystem. Yet for global charts, the US is the origin; for fashion and culture, Europe. A division of labor by event type.',
+    timeLagNote2: 'Latin America: 0 of 5 origins — despite being the most active fandom in Member Spotlight, agenda production is absent. Reception intensity and production power are decoupled.',
+    timeLagNote3: 'Africa is the latest in every event — average lag 6.2 hours. The periphery of the global K-pop media circuit.',
+    textureHeader: 'Linguistic Texture · 7d', textureMeta: '4 metrics × 6 regions',
+    textureSub: 'The texture of the reporting language itself. The same event is treated with different vocabulary, sentence length, and emotional tone in each region. All metrics are 0–100 normalized indices.',
+    textureMetric: 'Metric', textureSig: 'Signature Expressions',
+    textureNote1: 'Asian media\'s Korean loanword ratio is 68 — Sino-script transliterations like \'カムバック·完全体\' displace native words. Europe is lowest at 28. They internalize BTS through native translations like \'phénomène\' and \'Wirtschaftsmacht\'.',
+    textureNote2: 'Latin America scores 71 in evaluative and 78 in affective language — both ranked first. The most affective region, matching the V·Jimin preference seen in Member Spotlight.',
+    textureNote3: 'Korea and Asia: compactness 78 and 72 — "condensed headlines". Europe: 35 — "descriptive headlines". A linguistic-structural difference between Sino-script noun compression and European analytical prose.',
+    newsHeader: 'News · 24h', newsSort: 'Sorted by comments', newsViews: 'Views', newsComments: 'Comments', newsDensity: 'Density',
+    videoHeader: 'Hot Videos · 24h', videoYT: 'YouTube', shortsHeader: 'Shorts', shortsVertical: 'Vertical',
+    archiveLabel: 'Archive', archiveTitle: 'Discography by Year',
+    footer1: '© 2026 BTS Wire · An interface prototype based on dummy data.',
+    footer2: 'Designed on the premise that quantitative aggregation of media texts is not, in itself, criticism.',
+    regionKR: 'Korea', regionUS: 'USA', regionLATAM: 'Latin America', regionEU: 'Europe', regionAF: 'Africa', regionASIA: 'Asia (excl. Korea)', regionASIA_short: 'Asia',
+    frameIndustry: 'Industry', frameMusic: 'Music', frameSociety: 'Society', frameStyle: 'Style', frameFandom: 'Fandom', frameGossip: 'Gossip',
+    metricCompact: 'Headline Compactness', metricCompactDesc: 'Condensed ↔ Descriptive',
+    metricEvaluative: 'Evaluative Density', metricEvaluativeDesc: 'Objective ↔ Evaluative',
+    metricKoreanLoan: 'Korean Loanwords', metricKoreanLoanDesc: 'カムバック / regreso',
+    metricAffective: 'Affective Density', metricAffectiveDesc: 'Calm ↔ Affective',
+    eventReunion: 'BTS members complete military service', eventComeback: 'HYBE announces June comeback',
+    eventSeven: 'Jung Kook\'s \'Seven\' re-enters Billboard', eventDior: 'Jimin: 1st anniversary at Paris Fashion Week',
+    eventIndigo: 'RM releases \'Indigo\' Deluxe Edition'
+  },
+  ja: {
+    siteName: 'BTS Wire', siteSub: 'メタ報道',
+    introEyebrow: 'Editorial · Meta-Press',
+    introTitleA: '同じBTS、6つの呼び名。',
+    introTitleB: '地域ごとに、どう違って扱われるか。',
+    introBody: '韓国・米国・ラテンアメリカ・欧州・アフリカ・アジア6地域における24時間報道を、6つのフレームで分類しました。コメント・閲覧比を併記し、単なる露出量と「言説の密度」を分けて読めるよう設計しています。',
+    indexHeader: '日次言説指数',
+    indexSub: 'BTSメディア言説を定量化した日次指数。毎日0時(KST)発表 · 報道量・参加度・時間加重を統合。基準値1000.00 (2025-01-01)。',
+    indexDate: '発表日', indexTime: '00:00 KST 発表', indexBCI: 'BCI · BTS Composite Index',
+    indexOpen: '始値', indexHigh: '高値', indexLow: '安値', indexVolume: '出来高',
+    indexRegional: 'Regional Indices · 6地域', indexMember: 'Member Stocks · 7銘柄', indexMemberSub: '言及量(volume)基準',
+    frameHeader: 'Frame Compass · 24h', frameMeta: '6 regions × 6 frames',
+    frameSub: '地域別の見出しを、産業・音楽・スタイル・ファンダム・社会・ゴシップの6フレームに分類した分布。',
+    frameTop: '首位',
+    noteLabel1: 'Editorial Note 1', noteLabel2: 'Editorial Note 2', noteLabel3: 'Editorial Note 3',
+    frameNote1: '韓国は産業、ラテンアメリカはファンダム、欧州は社会・政治でBTSを呼ぶ — 地域ごとにBTSは別のものになる。',
+    frameNote2: 'アジア(韓国を除く)はスタイル・産業で半分 — 韓流を「美的資本」として受容するパターン。',
+    frameNote3: 'アフリカは音楽が1位 — 産業・外交フレームが弱く、音楽的価値の評価が優先される唯一の地域。',
+    memberHeader: 'Member Spotlight · 24h', memberMeta: '6 regions × 7 members',
+    memberSub: '地域別、メンバー7人の呼ばれ方の分布。どの地域が誰をBTSの顔として呼ぶか。',
+    memberNote1: 'ラテンアメリカではV+Jiminのビジュアルラインが45% — 6地域中、最も偏った分布。ラテン圏のメディアはBTSを視覚アイコンとして呼ぶ。',
+    memberNote2: '欧州はRM単独1位(20%) — 知識人イメージを持つリーダーへの欧州メディアの嗜好。韓国はRM・Jin・Vが均衡。',
+    memberNote3: '米国・アフリカはJung Kookが1位(20%・21%) — 音楽・チャート中心の受容地域に共通するパターン。アジアはV(22%)単独首位。',
+    timeLagHeader: 'Time Lag Tracker · 7d', timeLagMeta: '5 events × 6 regions',
+    timeLagSub: '主要事件が地域間でどう流れるか。最初の報道時点を基準(0h)として、他地域が追いつくまでの時差。',
+    timeLagOriginLabel: '震源 ·', timeLagOriginFreq: 'Origin Frequency · 震源頻度', timeLagOriginCount: '5件中',
+    timeLagNote1: '韓国は5件中3件の震源(60%) — K-popアジェンダ生態系の出発点。ただしグローバルチャートは米国、ファッション・文化は欧州が震源として作動する。事件タイプ別の分業。',
+    timeLagNote2: 'ラテンアメリカは5件すべて震源0件 — Member Spotlightで最も活発なファンダム地域として現れたにもかかわらず、アジェンダ生産は不在。受容強度と生産権力は分離している。',
+    timeLagNote3: 'アフリカは全事件で最も遅い地域 — 平均6.2時間の遅延。グローバルK-popメディア回路の周辺。',
+    textureHeader: 'Linguistic Texture · 7d', textureMeta: '4 metrics × 6 regions',
+    textureSub: '報道言語そのもののテクスチャ。同じ事件も、地域ごとに異なる語彙・文長・感情トーンで扱われる。すべての指標は0–100の正規化インデックス。',
+    textureMetric: '指標', textureSig: 'Signature Expressions · 地域別シグネチャ表現',
+    textureNote1: 'アジアメディアの韓国語音写比は68 — 「カムバック・完全体」のような漢字圏の音写が固有語を押しのける。欧州は28で最低。「phénomène」「Wirtschaftsmacht」など自国語訳でBTSを内面化する。',
+    textureNote2: 'ラテンアメリカは評価語71・感情語78で両項目とも1位 — 6地域中、最も情動的な言語。Member SpotlightのV・Jimin偏重とも一致するパターン。',
+    textureNote3: '韓国・アジアは圧縮度78・72で「含意型ヘッドライン」、欧州は35で「叙述型ヘッドライン」。漢字圏の名詞圧縮 vs 欧州メディアの分析的文体という言語構造的差異。',
+    newsHeader: 'News · 24h', newsSort: 'コメント順', newsViews: '閲覧', newsComments: 'コメント', newsDensity: '密度',
+    videoHeader: 'Hot Videos · 24h', videoYT: 'YouTube', shortsHeader: 'Shorts', shortsVertical: '縦型',
+    archiveLabel: 'Archive', archiveTitle: '年別ディスコグラフィ',
+    footer1: '© 2026 BTS Wire · 本ページはダミーデータに基づくインターフェイス・プロトタイプです。',
+    footer2: 'メディアテクストの量的集計がそのまま批評ではない、という前提のもとに設計されています。',
+    regionKR: '韓国', regionUS: '米国', regionLATAM: 'ラテンアメリカ', regionEU: '欧州', regionAF: 'アフリカ', regionASIA: 'アジア(韓国除く)', regionASIA_short: 'アジア',
+    frameIndustry: '産業', frameMusic: '音楽', frameSociety: '社会・政治', frameStyle: 'スタイル', frameFandom: 'ファンダム', frameGossip: 'ゴシップ',
+    metricCompact: 'ヘッドライン圧縮度', metricCompactDesc: '圧縮的 ↔ 叙述的',
+    metricEvaluative: '評価語密度', metricEvaluativeDesc: '客観 ↔ 評価',
+    metricKoreanLoan: '韓国語音写比', metricKoreanLoanDesc: 'カムバック / regreso',
+    metricAffective: '感情語密度', metricAffectiveDesc: '冷静 ↔ 情動的',
+    eventReunion: 'BTSメンバー全員除隊', eventComeback: 'HYBE、6月カムバック公式発表',
+    eventSeven: 'JUNG KOOK「Seven」Billboardチャート再浮上', eventDior: 'JIMIN、パリ・ファッションウィークDior 1周年',
+    eventIndigo: 'RM「Indigo」デラックス・エディション発売'
+  },
+  zh: {
+    siteName: 'BTS Wire', siteSub: '元媒体',
+    introEyebrow: 'Editorial · Meta-Press',
+    introTitleA: '同一个BTS,六种命名方式。',
+    introTitleB: '不同地区,如何被不同地对待。',
+    introBody: '将韩国、美国、拉丁美洲、欧洲、非洲、亚洲六个地区24小时内的报道,按6个框架进行分类。通过同时显示评论与浏览量比例,将单纯的曝光量与「话语密度」分开阅读。',
+    indexHeader: '日度话语指数',
+    indexSub: '将BTS媒体话语量化的日度指数。每日午夜(KST)发布 · 综合报道量、参与度、时间权重。基准值1000.00 (2025-01-01)。',
+    indexDate: '发布日期', indexTime: '00:00 KST 发布', indexBCI: 'BCI · BTS Composite Index',
+    indexOpen: '开盘', indexHigh: '最高', indexLow: '最低', indexVolume: '成交量',
+    indexRegional: 'Regional Indices · 6 地区', indexMember: 'Member Stocks · 7 个股', indexMemberSub: '基于提及量(volume)',
+    frameHeader: 'Frame Compass · 24h', frameMeta: '6 regions × 6 frames',
+    frameSub: '将各地区的标题分为产业、音乐、风格、粉丝群、社会、八卦6个框架的分布。',
+    frameTop: '榜首',
+    noteLabel1: 'Editorial Note 1', noteLabel2: 'Editorial Note 2', noteLabel3: 'Editorial Note 3',
+    frameNote1: '韩国以产业、拉丁美洲以粉丝群、欧洲以社会·政治来命名BTS — 在每个地区,BTS都成为不同的对象。',
+    frameNote2: '亚洲(除韩国外)风格·产业占一半 — 将韩流作为「美学资本」接受的模式。',
+    frameNote3: '非洲音乐居首 — 是产业·外交框架薄弱、音乐价值评价优先的唯一地区。',
+    memberHeader: 'Member Spotlight · 24h', memberMeta: '6 regions × 7 members',
+    memberSub: '各地区7位成员的提及分布。哪个地区将谁视为BTS的代表面孔。',
+    memberNote1: '拉丁美洲V+Jimin的「颜值线」占45% — 6个地区中分布最为偏倚。拉丁媒体将BTS命名为视觉偶像。',
+    memberNote2: '欧洲RM单独居首(20%) — 欧洲媒体对具有知识分子形象的领导者的偏好。韩国RM、Jin、V平衡。',
+    memberNote3: '美国和非洲Jung Kook居首(20%、21%) — 以音乐、榜单为中心接受地区的共通模式。亚洲V(22%)单独居首。',
+    timeLagHeader: 'Time Lag Tracker · 7d', timeLagMeta: '5 events × 6 regions',
+    timeLagSub: '主要事件如何在地区间流动。以首次报道时点(0h)为基准,其他地区追赶所需的时差。',
+    timeLagOriginLabel: '震源 ·', timeLagOriginFreq: 'Origin Frequency · 震源频率', timeLagOriginCount: '5件中',
+    timeLagNote1: '韩国是5件中3件的震源(60%) — K-pop议题生态系统的起点。但全球榜单由美国、时尚·文化由欧洲作为震源运作。按事件类型的分工。',
+    timeLagNote2: '拉丁美洲5件中震源为0 — 在Member Spotlight中显示为最活跃粉丝地区,议题生产却不存在。接受强度与生产权力是分离的。',
+    timeLagNote3: '非洲在所有事件中是最晚的地区 — 平均6.2小时延迟。位于全球K-pop媒体回路的边缘。',
+    textureHeader: 'Linguistic Texture · 7d', textureMeta: '4 metrics × 6 regions',
+    textureSub: '报道语言本身的肌理。同一事件,各地区以不同的词汇、句长、情感语调处理。所有指标为0–100标准化指数。',
+    textureMetric: '指标', textureSig: 'Signature Expressions · 各地区签名表达',
+    textureNote1: '亚洲媒体的韩语音译比为68 — 「カムバック·完全体」等汉字圈音译挤压固有词。欧洲为28最低。以「phénomène」「Wirtschaftsmacht」等本国语翻译将BTS自我化。',
+    textureNote2: '拉丁美洲评价语71·情感语78,两项均居首 — 6个地区中最具情感性的语言。与Member SpotlightV·Jimin偏好一致的模式。',
+    textureNote3: '韩国·亚洲压缩度78·72为「含蓄型标题」,欧洲35为「叙述型标题」。汉字圈的名词压缩与欧洲媒体分析文体的语言结构差异。',
+    newsHeader: 'News · 24h', newsSort: '按评论数', newsViews: '浏览', newsComments: '评论', newsDensity: '密度',
+    videoHeader: 'Hot Videos · 24h', videoYT: 'YouTube', shortsHeader: 'Shorts', shortsVertical: '竖屏',
+    archiveLabel: 'Archive', archiveTitle: '年度作品集',
+    footer1: '© 2026 BTS Wire · 本页面是基于虚拟数据的界面原型。',
+    footer2: '基于「媒体文本的量化聚合本身并非批评」这一前提进行设计。',
+    regionKR: '韩国', regionUS: '美国', regionLATAM: '拉丁美洲', regionEU: '欧洲', regionAF: '非洲', regionASIA: '亚洲(除韩国)', regionASIA_short: '亚洲',
+    frameIndustry: '产业', frameMusic: '音乐', frameSociety: '社会·政治', frameStyle: '风格', frameFandom: '粉丝群', frameGossip: '八卦',
+    metricCompact: '标题压缩度', metricCompactDesc: '压缩 ↔ 叙述',
+    metricEvaluative: '评价语密度', metricEvaluativeDesc: '客观 ↔ 评价',
+    metricKoreanLoan: '韩语音译比', metricKoreanLoanDesc: 'カムバック / regreso',
+    metricAffective: '情感语密度', metricAffectiveDesc: '冷静 ↔ 情感',
+    eventReunion: 'BTS成员全员退伍', eventComeback: 'HYBE,6月回归正式发布',
+    eventSeven: 'Jung Kook「Seven」重返Billboard榜单', eventDior: 'Jimin,巴黎时装周Dior一周年',
+    eventIndigo: 'RM「Indigo」豪华版发售'
+  },
+  es: {
+    siteName: 'BTS Wire', siteSub: 'Meta-Prensa',
+    introEyebrow: 'Editorial · Meta-Prensa',
+    introTitleA: 'El mismo BTS, seis nombramientos.',
+    introTitleB: 'Cómo cada región los trata distinto.',
+    introBody: 'Análisis en 6 marcos de la cobertura de BTS durante 24 horas en Corea, EE.UU., América Latina, Europa, África y Asia. La proporción comentarios/vistas se muestra junto a las métricas brutas para separar la mera visibilidad de la densidad del discurso.',
+    indexHeader: 'Índice Diario de Discurso',
+    indexSub: 'Índice diario cuantificado del discurso mediático sobre BTS. Publicado cada medianoche (KST). Ponderado por volumen de cobertura, participación y tiempo. Valor base 1000.00 (2025-01-01).',
+    indexDate: 'Fecha de publicación', indexTime: 'Publicado 00:00 KST', indexBCI: 'BCI · BTS Composite Index',
+    indexOpen: 'Apertura', indexHigh: 'Máx.', indexLow: 'Mín.', indexVolume: 'Volumen',
+    indexRegional: 'Regional Indices · 6 regiones', indexMember: 'Member Stocks · 7 títulos', indexMemberSub: 'Base: volumen de menciones',
+    frameHeader: 'Frame Compass · 24h', frameMeta: '6 regions × 6 frames',
+    frameSub: 'Distribución de titulares por región en 6 marcos: industria, música, sociedad, estilo, fandom, chismes.',
+    frameTop: 'top',
+    noteLabel1: 'Nota Editorial 1', noteLabel2: 'Nota Editorial 2', noteLabel3: 'Nota Editorial 3',
+    frameNote1: 'Corea nombra a BTS desde la industria, América Latina desde el fandom, Europa desde la sociedad — en cada región, BTS se vuelve un objeto distinto.',
+    frameNote2: 'Asia (sin Corea) reparte la mitad entre estilo e industria — un patrón de recibir la K-wave como "capital estético".',
+    frameNote3: 'África coloca primero la música — la única región donde los marcos de industria y diplomacia son débiles y la evaluación musical va primero.',
+    memberHeader: 'Member Spotlight · 24h', memberMeta: '6 regions × 7 members',
+    memberSub: 'Distribución regional de menciones de los 7 miembros. Qué región trata a quién como rostro de BTS.',
+    memberNote1: 'América Latina otorga a la "línea visual" V + Jimin un 45% — la distribución más sesgada. La prensa latina nombra a BTS desde íconos visuales.',
+    memberNote2: 'Europa coloca a RM solo en primer lugar (20%) — preferencia de la prensa europea por un líder con imagen intelectual. Corea equilibra a RM, Jin y V.',
+    memberNote3: 'EE.UU. y África ponen a Jung Kook primero (20%, 21%) — patrón compartido de regiones centradas en música y rankings. Asia da a V (22%) el primer lugar solo.',
+    timeLagHeader: 'Time Lag Tracker · 7d', timeLagMeta: '5 events × 6 regions',
+    timeLagSub: 'Cómo fluyen los grandes eventos entre regiones. Demora desde la primera cobertura (0h), midiendo cuánto tarda cada región en alcanzar.',
+    timeLagOriginLabel: 'Origen ·', timeLagOriginFreq: 'Frecuencia de Origen', timeLagOriginCount: 'de 5',
+    timeLagNote1: 'Corea es el origen de 3 de 5 eventos (60%) — punto de partida del ecosistema de la agenda K-pop. Pero para los rankings globales, el origen es EE.UU.; para moda y cultura, Europa. División del trabajo por tipo de evento.',
+    timeLagNote2: 'América Latina: 0 de 5 orígenes — pese a ser el fandom más activo en Member Spotlight, la producción de agenda está ausente. La intensidad de la recepción y el poder de producción están desacoplados.',
+    timeLagNote3: 'África es la última en cada evento — demora promedio de 6.2 horas. La periferia del circuito mediático global del K-pop.',
+    textureHeader: 'Linguistic Texture · 7d', textureMeta: '4 metrics × 6 regions',
+    textureSub: 'La textura del lenguaje informativo en sí. El mismo evento se trata con vocabulario, longitud de oración y tono emocional distintos en cada región. Todas las métricas son índices normalizados de 0–100.',
+    textureMetric: 'Métrica', textureSig: 'Expresiones Signatura',
+    textureNote1: 'La proporción de préstamos coreanos en medios asiáticos es 68 — transliteraciones sino-escritas como "カムバック·完全体" desplazan a las palabras nativas. Europa es la más baja con 28. Internalizan a BTS mediante traducciones nativas como "phénomène" o "Wirtschaftsmacht".',
+    textureNote2: 'América Latina puntúa 71 en lenguaje evaluativo y 78 en lenguaje afectivo — ambas en primer lugar. La región más afectiva, coincidiendo con la preferencia por V·Jimin observada en Member Spotlight.',
+    textureNote3: 'Corea y Asia: compactness 78 y 72 — "titulares condensados". Europa: 35 — "titulares descriptivos". Una diferencia lingüística-estructural entre la compresión nominal sino-escrita y la prosa analítica europea.',
+    newsHeader: 'News · 24h', newsSort: 'Por comentarios', newsViews: 'Vistas', newsComments: 'Comentarios', newsDensity: 'Densidad',
+    videoHeader: 'Hot Videos · 24h', videoYT: 'YouTube', shortsHeader: 'Shorts', shortsVertical: 'Vertical',
+    archiveLabel: 'Archivo', archiveTitle: 'Discografía por Año',
+    footer1: '© 2026 BTS Wire · Prototipo de interfaz basado en datos ficticios.',
+    footer2: 'Diseñado bajo la premisa de que la agregación cuantitativa de textos mediáticos no es, en sí misma, crítica.',
+    regionKR: 'Corea', regionUS: 'EE.UU.', regionLATAM: 'América Latina', regionEU: 'Europa', regionAF: 'África', regionASIA: 'Asia (sin Corea)', regionASIA_short: 'Asia',
+    frameIndustry: 'Industria', frameMusic: 'Música', frameSociety: 'Sociedad', frameStyle: 'Estilo', frameFandom: 'Fandom', frameGossip: 'Chismes',
+    metricCompact: 'Compactness de Titular', metricCompactDesc: 'Condensado ↔ Descriptivo',
+    metricEvaluative: 'Densidad Evaluativa', metricEvaluativeDesc: 'Objetivo ↔ Evaluativo',
+    metricKoreanLoan: 'Préstamos Coreanos', metricKoreanLoanDesc: 'カムバック / regreso',
+    metricAffective: 'Densidad Afectiva', metricAffectiveDesc: 'Calmado ↔ Afectivo',
+    eventReunion: 'Miembros de BTS completan el servicio militar', eventComeback: 'HYBE anuncia regreso en junio',
+    eventSeven: '\'Seven\' de Jung Kook reentra a Billboard', eventDior: 'Jimin: 1° aniversario en Paris Fashion Week',
+    eventIndigo: 'RM lanza Edición Deluxe de \'Indigo\''
+  }
+};
+
+let currentLang = 'ko';
+let currentRegion = 'KR';
+const t = (key) => (I18N[currentLang] && I18N[currentLang][key]) || I18N.ko[key] || key;
+
+// ========== STATIC DATA ==========
+const FRAMES = {
+  Industry: { color: '#5B21B6' }, Music: { color: '#7C3AED' }, Society: { color: '#9D6FFC' },
+  Style: { color: '#BB86FC' }, Fandom: { color: '#C7B0F0' }, Gossip: { color: '#E5DEF5' }
+};
+const FRAME_ORDER = ['Industry','Music','Society','Style','Fandom','Gossip'];
+const REGION_ORDER = ['KR','US','LATAM','EU','AF','ASIA'];
+const REGION_SHORT = { KR: 'KR', US: 'US', LATAM: 'LATAM', EU: 'EU', AF: 'AF', ASIA: 'ASIA' };
+const fl = (f) => t('frame' + f);
+const rl = (r) => t('region' + r);
+const rs = (r) => r === 'ASIA' ? t('regionASIA_short') : r;
+
+const MEMBERS = [
+  { id: 'RM',    label: 'RM',         color: '#1A0080' },
+  { id: 'Jin',   label: 'Jin',        color: '#311B92' },
+  { id: 'SUGA',  label: 'SUGA',       color: '#4527A0' },
+  { id: 'jhope', label: 'j-hope',     color: '#6200EA' },
+  { id: 'Jimin', label: 'Jimin',      color: '#7C3AED' },
+  { id: 'V',     label: 'V',          color: '#9D6FFC' },
+  { id: 'JK',    label: 'Jung Kook',  color: '#BB86FC' }
+];
+
+const frameCompass = {
+  KR:    { Industry: 32, Music: 18, Society: 18, Style: 12, Fandom: 12, Gossip: 8 },
+  US:    { Industry: 20, Music: 28, Society: 22, Style: 15, Fandom: 10, Gossip: 5 },
+  LATAM: { Industry: 8,  Music: 22, Society: 12, Style: 18, Fandom: 32, Gossip: 8 },
+  EU:    { Industry: 15, Music: 20, Society: 35, Style: 15, Fandom: 8,  Gossip: 7 },
+  AF:    { Industry: 12, Music: 32, Society: 20, Style: 10, Fandom: 22, Gossip: 4 },
+  ASIA:  { Industry: 25, Music: 22, Society: 8,  Style: 25, Fandom: 18, Gossip: 2 }
+};
+const memberData = {
+  KR:    { RM: 18, Jin: 16, SUGA: 14, jhope: 12, Jimin: 13, V: 14, JK: 13 },
+  US:    { RM: 14, Jin: 10, SUGA: 12, jhope: 11, Jimin: 18, V: 15, JK: 20 },
+  LATAM: { RM: 8,  Jin: 9,  SUGA: 10, jhope: 12, Jimin: 22, V: 23, JK: 16 },
+  EU:    { RM: 20, Jin: 11, SUGA: 13, jhope: 11, Jimin: 17, V: 14, JK: 14 },
+  AF:    { RM: 12, Jin: 10, SUGA: 11, jhope: 13, Jimin: 16, V: 17, JK: 21 },
+  ASIA:  { RM: 11, Jin: 13, SUGA: 12, jhope: 11, Jimin: 16, V: 22, JK: 15 }
+};
+const timeLagEvents = [
+  { titleKey: 'eventReunion', origin: 'KR', frame: 'Society', timeline: { KR: 0, ASIA: 1.5, US: 3, LATAM: 4, EU: 5, AF: 8 } },
+  { titleKey: 'eventComeback', origin: 'KR', frame: 'Industry', timeline: { KR: 0, US: 0.5, ASIA: 1, EU: 2, LATAM: 3, AF: 6 } },
+  { titleKey: 'eventSeven', origin: 'US', frame: 'Music', timeline: { US: 0, KR: 1, EU: 2, ASIA: 2.5, LATAM: 3, AF: 5 } },
+  { titleKey: 'eventDior', origin: 'EU', frame: 'Style', timeline: { EU: 0, KR: 1, ASIA: 2, US: 1.5, LATAM: 3, AF: 5 } },
+  { titleKey: 'eventIndigo', origin: 'KR', frame: 'Music', timeline: { KR: 0, ASIA: 1, EU: 2, US: 2.5, LATAM: 4, AF: 7 } }
+];
+const originFreq = { KR: 3, US: 1, EU: 1, ASIA: 0, LATAM: 0, AF: 0 };
+const TEXTURE_METRICS = [
+  { id: 'compact',    keyKo: 'metricCompact',    keyDesc: 'metricCompactDesc' },
+  { id: 'evaluative', keyKo: 'metricEvaluative', keyDesc: 'metricEvaluativeDesc' },
+  { id: 'koreanLoan', keyKo: 'metricKoreanLoan', keyDesc: 'metricKoreanLoanDesc' },
+  { id: 'affective',  keyKo: 'metricAffective',  keyDesc: 'metricAffectiveDesc' }
+];
+const textureData = {
+  KR:    { compact: 78, evaluative: 42, koreanLoan: 100, affective: 35 },
+  US:    { compact: 52, evaluative: 58, koreanLoan: 35,  affective: 48 },
+  LATAM: { compact: 48, evaluative: 71, koreanLoan: 42,  affective: 78 },
+  EU:    { compact: 35, evaluative: 48, koreanLoan: 28,  affective: 32 },
+  AF:    { compact: 55, evaluative: 55, koreanLoan: 32,  affective: 62 },
+  ASIA:  { compact: 72, evaluative: 38, koreanLoan: 68,  affective: 52 }
+};
+const signatureWords = {
+  KR:    { lang: '한국어',           words: ['BTS', '방탄소년단', 'K-팝', '글로벌', '컴백'] },
+  US:    { lang: 'English',          words: ['phenomenon', 'global', 'soft power', 'K-pop empire', 'reunion'] },
+  LATAM: { lang: 'Español·Português',words: ['regreso', 'fenómeno', 'ARMY', 'conquista', 'reencuentro'] },
+  EU:    { lang: 'Multi (EN·FR·DE)', words: ['diplomatie culturelle', 'phénomène', 'industrie', 'Wirtschaftsmacht'] },
+  AF:    { lang: 'English·Local',    words: ['global', 'industry', 'ARMY', 'streaming', 'continent'] },
+  ASIA:  { lang: '日本語·中文',       words: ['カムバック', '現象', 'アイドル', '完全体', '回归'] }
+};
+
+// News, videos, archive (원어 유지)
+const newsData = {
+  KR: [
+    { outlet: "스타뉴스",   frame: "Society",  title: "방탄소년단 멤버 전원 제대… ARMY '드디어 완전체'", time: "14h", views: 1210000, comments: 8729 },
+    { outlet: "더팩트",     frame: "Industry", title: "BTS, 완전체 컴백 임박… 빅히트 '6월 발표 예정'", time: "2h", views: 842000, comments: 3421 },
+    { outlet: "헤럴드POP",  frame: "Style",    title: "지민, 파리 패션위크서 디올 글로벌 앰배서더 활동", time: "11h", views: 387000, comments: 2103 },
+    { outlet: "텐아시아",   frame: "Music",    title: "정국 'Seven' 빌보드 차트 재진입… 글로벌 영향력 입증", time: "5h", views: 521000, comments: 1892 },
+    { outlet: "OSEN",       frame: "Music",    title: "RM '인디고' 디럭스 에디션 발매… 솔로 행보 본격화", time: "8h", views: 413000, comments: 1520 },
+    { outlet: "마이데일리", frame: "Fandom",   title: "뷔, 첫 단독 다큐멘터리 디즈니+ 공개 확정", time: "17h", views: 295000, comments: 989 },
+    { outlet: "스포츠경향", frame: "Industry", title: "BTS 효과? K-팝 미국 음반 매출 사상 최대치 경신", time: "22h", views: 184000, comments: 543 },
+    { outlet: "조선일보",   frame: "Gossip",   title: "정국, 강남 빌딩 매입설 '소속사 확인 중'", time: "9h", views: 232000, comments: 1340 }
+  ],
+  US: [
+    { outlet: "Billboard",     frame: "Society",  title: "BTS Reunion Sparks Global Frenzy as Members Complete Service", time: "3h", views: 920000, comments: 5840 },
+    { outlet: "Rolling Stone", frame: "Society",  title: "Inside the K-Pop Empire: BTS's Cultural Soft Power Reaches New Heights", time: "6h", views: 612000, comments: 3120 },
+    { outlet: "Variety",       frame: "Industry", title: "BTS Members Reportedly Sign New HYBE Deal Worth Record Sum", time: "18h", views: 488000, comments: 2645 },
+    { outlet: "The Atlantic",  frame: "Music",    title: "From BU to BTSverse: How the Group Built a Transmedia Empire", time: "23h", views: 312000, comments: 1980 },
+    { outlet: "Forbes",        frame: "Music",    title: "Jung Kook's 'Seven' Hits 2 Billion Streams on Spotify", time: "12h", views: 425000, comments: 1742 },
+    { outlet: "Time",          frame: "Style",    title: "Jimin Crowned Most Influential Asian Artist of the Decade", time: "21h", views: 380000, comments: 1521 },
+    { outlet: "NPR",           frame: "Music",    title: "Why BTS's Catalog Still Shapes Pop Composition in 2026", time: "9h", views: 264000, comments: 1102 },
+    { outlet: "People",        frame: "Fandom",   title: "V's Disney+ Documentary Trailer Breaks 24-hour Viewing Record", time: "20h", views: 145000, comments: 512 }
+  ],
+  LATAM: [
+    { outlet: "Billboard Argentina", frame: "Fandom",   title: "BTS regresa al completo: ARMY latina celebra el reencuentro", time: "5h", views: 412000, comments: 4820 },
+    { outlet: "Rolling Stone México",frame: "Fandom",   title: "Por qué BTS sigue conquistando América Latina en 2026", time: "9h", views: 287000, comments: 2340 },
+    { outlet: "Folha de S.Paulo",    frame: "Society",  title: "BTS e o fenômeno cultural sul-coreano: uma análise sociológica", time: "14h", views: 198000, comments: 1450 },
+    { outlet: "Clarín",              frame: "Style",    title: "Jimin inaugura tienda Dior en Buenos Aires", time: "16h", views: 165000, comments: 1120 },
+    { outlet: "Veja",                frame: "Music",    title: "'Seven' de Jung Kook atinge marca histórica nas plataformas", time: "11h", views: 142000, comments: 892 },
+    { outlet: "La Nación",           frame: "Industry", title: "El regreso de BTS reactiva el mercado del K-pop en Argentina", time: "20h", views: 124000, comments: 645 },
+    { outlet: "El Universal",        frame: "Fandom",   title: "ARMY mexicana organiza maratón de 12 horas por el reencuentro", time: "22h", views: 98000, comments: 487 }
+  ],
+  EU: [
+    { outlet: "The Guardian",  frame: "Society",  title: "BTS at the centre of debate on K-pop's global cultural politics", time: "7h", views: 521000, comments: 4210 },
+    { outlet: "Le Monde",      frame: "Society",  title: "BTS, le retour : comment la K-pop redéfinit la diplomatie culturelle", time: "10h", views: 312000, comments: 2840 },
+    { outlet: "NME",           frame: "Music",    title: "BTS announce reunion: what to expect from the comeback album", time: "4h", views: 487000, comments: 3120 },
+    { outlet: "Der Spiegel",   frame: "Industry", title: "Die Wirtschaftsmacht BTS: Eine ökonomische Analyse", time: "13h", views: 198000, comments: 1450 },
+    { outlet: "El País",       frame: "Music",    title: "RM presenta la edición deluxe de 'Indigo' en Madrid", time: "15h", views: 165000, comments: 1120 },
+    { outlet: "Libération",    frame: "Style",    title: "Jimin: l'icône de mode coréenne consacrée par Dior", time: "19h", views: 142000, comments: 892 },
+    { outlet: "BBC Music",     frame: "Society",  title: "After BTS: how K-pop reshaped UK youth culture in a decade", time: "16h", views: 218000, comments: 1640 }
+  ],
+  AF: [
+    { outlet: "The Punch (NG)",   frame: "Fandom",   title: "BTS Reunion: Nigerian ARMY Plans Watch Parties Across Lagos", time: "8h", views: 218000, comments: 2410 },
+    { outlet: "News24 (SA)",      frame: "Society",  title: "Why South Africa's K-pop scene is exploding post-BTS hiatus", time: "11h", views: 165000, comments: 1820 },
+    { outlet: "Pulse Nigeria",    frame: "Music",    title: "Jung Kook's 'Seven' tops Nigerian streaming charts for 4th week", time: "14h", views: 124000, comments: 1120 },
+    { outlet: "Daily Nation (KE)",frame: "Industry", title: "Kenyan music industry watches BTS's return for industry lessons", time: "18h", views: 87000, comments: 645 },
+    { outlet: "BellaNaija",       frame: "Style",    title: "BTS members spotted in luxury fashion: a style breakdown", time: "21h", views: 78000, comments: 421 },
+    { outlet: "Mail & Guardian",  frame: "Music",    title: "BTS and the global Black music dialogue: a critical reading", time: "16h", views: 102000, comments: 892 }
+  ],
+  ASIA: [
+    { outlet: "ORICON",                  frame: "Fandom",   title: "BTS、完全体カムバックへ… 日本ファンも歓喜", time: "4h", views: 521000, comments: 3214 },
+    { outlet: "South China Morning Post",frame: "Industry", title: "BTS's return reshapes the Asian music industry landscape", time: "9h", views: 412000, comments: 2840 },
+    { outlet: "ナタリー",                frame: "Music",    title: "RM、東京ドーム公演計画… チケット争奪戦必至", time: "10h", views: 348000, comments: 2105 },
+    { outlet: "Real Sound (JP)",         frame: "Style",    title: "ジミン、Dior アンバサダー就任から1周年… 日本ファッションへの影響", time: "13h", views: 287000, comments: 1240 },
+    { outlet: "Tempo (ID)",              frame: "Industry", title: "BTS dan dampaknya bagi industri musik Asia Tenggara", time: "13h", views: 198000, comments: 1240 },
+    { outlet: "The Nation (TH)",         frame: "Fandom",   title: "Thai ARMY prepares for BTS reunion concert in Bangkok", time: "17h", views: 165000, comments: 1120 },
+    { outlet: "Sina Entertainment",      frame: "Society",  title: "防弹少年团回归引发亚洲娱乐圈关注", time: "20h", views: 142000, comments: 892 }
+  ]
+};
+
+const hotVideos = [
+  { id: "MBdVXkSdhwU", title: "BTS (방탄소년단) 'DNA' Official MV", channel: "HYBE LABELS", views: 1820000, comments: 14200, hours: 6 },
+  { id: "XsX3ATc3FbA", title: "BTS (방탄소년단) '작은 것들을 위한 시 (Boy With Luv)' MV", channel: "HYBE LABELS", views: 1250000, comments: 9870, hours: 12 },
+  { id: "WMweEpGlu_U", title: "BTS (방탄소년단) 'Butter' Official MV", channel: "HYBE LABELS", views: 980000, comments: 7642, hours: 18 },
+  { id: "pBuZEGYXA6E", title: "BTS (방탄소년단) 'IDOL' Official MV", channel: "HYBE LABELS", views: 740000, comments: 5210, hours: 22 }
+];
+const shortsData = [
+  { id: "MBdVXkSdhwU", title: "정국 'Seven' Dance Challenge", views: 4200000, comments: 18420 },
+  { id: "XsX3ATc3FbA", title: "지민 'Like Crazy' Behind", views: 3100000, comments: 12840 },
+  { id: "WMweEpGlu_U", title: "Butter Choreography Cut", views: 2800000, comments: 9821 },
+  { id: "pBuZEGYXA6E", title: "RM Studio Vlog Highlight", views: 1900000, comments: 7421 },
+  { id: "hmE9f-TEutc", title: "V Documentary Teaser", views: 1650000, comments: 6210 },
+  { id: "xEeFrLSkMm8", title: "SUGA Live Session Preview", views: 1320000, comments: 4985 }
+];
+const archiveData = [
+  { year: 2013, album: "2 Cool 4 Skool", note: "데뷔 싱글. 학교 3부작의 시작.", songs: [{ title:"No More Dream", videoId:"rBG5L7UsUxA" }] },
+  { year: 2014, album: "Skool Luv Affair / Dark & Wild", note: "학교 3부작 완결과 첫 정규.", songs: [{ title:"Boy In Luv", videoId:"ZE2Lo8MqxEs" }, { title:"Danger", videoId:"rBG5L7UsUxA" }] },
+  { year: 2015, album: "화양연화 Pt.1 / Pt.2", note: "청춘의 가장 아름다운 순간 — 2부작.", songs: [{ title:"I NEED U", videoId:"jjskoRh8GTE" }, { title:"DOPE (쩔어)", videoId:"qjsx5Mfq-AA" }, { title:"RUN", videoId:"wKysONrSmew" }] },
+  { year: 2016, album: "WINGS / Young Forever", note: "헤르만 헤세 『데미안』 모티프, 미학적 전환점.", songs: [{ title:"Blood Sweat & Tears (피 땀 눈물)", videoId:"hmE9f-TEutc" }, { title:"Save Me", videoId:"GZjt_sA2eso" }] },
+  { year: 2017, album: "LOVE YOURSELF 承 'Her'", note: "글로벌 도약의 분기점. BBMA 첫 수상.", songs: [{ title:"Spring Day (봄날)", videoId:"xEeFrLSkMm8" }, { title:"DNA", videoId:"MBdVXkSdhwU" }, { title:"MIC Drop", videoId:"kTlv5_Bs8aw" }] },
+  { year: 2018, album: "LOVE YOURSELF 轉 'Tear' / 結 'Answer'", note: "라캉적 자기 응시 — 빌보드 200 1위.", songs: [{ title:"FAKE LOVE", videoId:"7C2z4GqqS5E" }, { title:"IDOL", videoId:"pBuZEGYXA6E" }] },
+  { year: 2019, album: "MAP OF THE SOUL: PERSONA", note: "융 심리학 모티프. Halsey 협업.", songs: [{ title:"작은 것들을 위한 시 (Boy With Luv) feat. Halsey", videoId:"XsX3ATc3FbA" }, { title:"Make It Right", videoId:"TXViVmTAt9c" }] },
+  { year: 2020, album: "MAP OF THE SOUL: 7 / BE", note: "팬데믹기의 위로. 'Dynamite' HOT 100 1위.", songs: [{ title:"ON", videoId:"gdZLi9oWNZg" }, { title:"Black Swan", videoId:"0lapF4DQPKQ" }, { title:"Life Goes On", videoId:"-5q5mZbe3V8" }] },
+  { year: 2021, album: "Butter / Permission to Dance", note: "디지털 싱글 시기.", songs: [{ title:"Butter", videoId:"WMweEpGlu_U" }, { title:"Permission to Dance", videoId:"CuklIb9d3fI" }] },
+  { year: 2022, album: "Proof", note: "9주년 앤솔로지. 솔로 활동 선언.", songs: [{ title:"Yet To Come", videoId:"FuXNumBwDOM" }, { title:"Run BTS", videoId:"ozKMG5BiDpo" }] },
+  { year: 2023, album: "Solo Era", note: "멤버 개별 활동의 본격화.", songs: [{ title:"Jung Kook — Seven (feat. Latto)", videoId:"QU9c0053UAU" }, { title:"Jimin — Like Crazy", videoId:"kTlv5_Bs8aw" }, { title:"SUGA — Haegeum", videoId:"AVrK7nNgRAQ" }] },
+  { year: 2024, album: "병역기", note: "멤버 전원 입대. 사전 녹음 콘텐츠 순차 공개.", songs: [{ title:"RM — Come back to me", videoId:"9stIb-OwTFQ" }] },
+  { year: 2025, album: "전역 라인", note: "멤버 순차 전역. 솔로 컴백.", songs: [{ title:"j-hope — MONA LISA", videoId:"kTlv5_Bs8aw" }, { title:"Jimin — MUSE Tracks", videoId:"kTlv5_Bs8aw" }] },
+  { year: 2026, album: "Reunion (TBA)", note: "완전체 컴백 예정. 7인 정규 작업 중.", songs: [{ title:"Yet To Come, Again — Pre-release", videoId:"FuXNumBwDOM" }] }
+];
+
+// Index data
+const indexData = {
+  BCI:   { short: 'BCI',   current: 1247.83, open: 1235.38, history: [] },
+  KR:    { short: 'KR-KP', current: 1432.51, open: 1414.62, history: [] },
+  US:    { short: 'US-DI', current: 1156.42, open: 1147.23, history: [] },
+  LATAM: { short: 'LA-FE', current: 1089.34, open: 1063.75, history: [] },
+  EU:    { short: 'EU-DC', current: 987.12,  open: 990.35,  history: [] },
+  AF:    { short: 'AF-DI', current: 834.65,  open: 830.42,  history: [] },
+  ASIA:  { short: 'AS-CC', current: 1278.56, open: 1259.34, history: [] }
+};
+let bciVolume = 47230000;
+const memberStocks = {
+  RM: { name: 'RM', current: 412.35, open: 408.20, volume: 482034 },
+  Jin: { name: 'Jin', current: 387.42, open: 392.10, volume: 321542 },
+  SUGA: { name: 'SUGA', current: 365.80, open: 361.40, volume: 289012 },
+  jhope: { name: 'j-hope', current: 378.65, open: 372.30, volume: 312087 },
+  Jimin: { name: 'Jimin', current: 521.43, open: 510.85, volume: 685234 },
+  V: { name: 'V', current: 542.71, open: 528.95, volume: 724012 },
+  JK: { name: 'Jung Kook', current: 568.32, open: 549.18, volume: 812456 }
+};
+const sectorData = {
+  Industry: { current: 1287.50, open: 1268.45, history: [] },
+  Music:    { current: 1342.85, open: 1318.92, history: [] },
+  Society:  { current: 1156.40, open: 1129.20, history: [] },
+  Style:    { current: 1098.20, open: 1089.50, history: [] },
+  Fandom:   { current: 982.40,  open: 970.85,  history: [] },
+  Gossip:   { current: 867.10,  open: 869.75,  history: [] }
+};
+function initIndexHistory() {
+  [...Object.values(indexData), ...Object.values(sectorData)].forEach(idx => {
+    let v = idx.open;
+    for (let i = 0; i < 40; i++) { v = v * (1 + (Math.random() - 0.5) * 0.008); idx.history.push(v); }
+    idx.history.push(idx.current);
+  });
+}
+
+// ========== UTILS ==========
+const fmt = (n) => n >= 1e6 ? (n/1e6).toFixed(1)+'M' : n >= 1e3 ? (n/1e3).toFixed(1)+'K' : n;
+const fmtKo = (n) => n >= 1e8 ? (n/1e8).toFixed(1)+(currentLang === 'ko' ? '억' : 'B') : n >= 1e4 ? (n/1e4).toFixed(1)+(currentLang === 'ko' ? '만' : 'K') : n.toLocaleString();
+const ratio = (c, v) => ((c/v)*100).toFixed(2)+'%';
+function buildSparkline(history, w, h) {
+  if (!history.length) return '';
+  const min = Math.min(...history), max = Math.max(...history);
+  const range = max - min || 1;
+  return history.map((v, i) => {
+    const x = (i / (history.length - 1)) * w;
+    const y = h - ((v - min) / range) * (h - 2) - 1;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+}
+
+// ========== RENDER ==========
+function applyStaticI18n() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.dataset.i18n);
+  });
+  document.body.lang = currentLang;
+  document.documentElement.lang = currentLang;
+}
+
+function renderTextureHeader() {
+  const el = document.getElementById('textureHeader');
+  el.innerHTML = `
+    <div>${t('textureMetric')}</div>
+    ${REGION_ORDER.map(r => `<div class="text-center">${rs(r)}</div>`).join('')}
+  `;
+}
+
+function renderIndexBoard() {
+  const bci = indexData.BCI;
+  const bciCh = bci.current - bci.open;
+  const bciIsBaseline = Math.abs(bciCh) < 0.01;
+  const bciPct = (bciCh / bci.open) * 100;
+  const bciUp = bciCh >= 0;
+  document.getElementById('bciValue').textContent = bci.current.toFixed(2);
+  if (bciIsBaseline) {
+    document.getElementById('bciChange').innerHTML = `<span class="text-neutral-400 text-[11px] uppercase tracking-wider font-medium">Day 1 · Baseline · 등락 측정 시작</span>`;
+  } else {
+    document.getElementById('bciChange').innerHTML = `<span class="${bciUp ? 'accent' : 'text-neutral-500'} font-medium">${bciUp ? '▲' : '▼'} ${Math.abs(bciCh).toFixed(2)} (${bciUp ? '+' : ''}${bciPct.toFixed(2)}%)</span>`;
+  }
+  document.getElementById('bciOpen').textContent = bci.open.toFixed(2);
+  document.getElementById('bciHigh').textContent = Math.max(...bci.history).toFixed(2);
+  document.getElementById('bciLow').textContent = Math.min(...bci.history).toFixed(2);
+  document.getElementById('bciVolume').textContent = (bciVolume / 1e6).toFixed(2) + 'M';
+  document.getElementById('bciChart').innerHTML = `<polyline points="${buildSparkline(bci.history, 200, 60)}" stroke="${bciUp ? '#BB86FC' : '#737373'}" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+
+  document.getElementById('regionalIndices').innerHTML = REGION_ORDER.map(r => {
+    const idx = indexData[r];
+    const ch = idx.current - idx.open;
+    const pct = (ch / idx.open) * 100;
+    const up = ch >= 0;
+    return `
+      <div class="border border-neutral-100 p-3 hover:border-accent/30 transition">
+        <div class="flex items-center justify-between mb-1">
+          <p class="text-[10px] uppercase tracking-wider text-neutral-500 font-medium">${idx.short}</p>
+          <span class="text-[10px] ${up ? 'accent' : 'text-neutral-400'}">${up ? '▲' : '▼'}</span>
+        </div>
+        <p class="text-base font-medium num-feat tracking-tight">${idx.current.toFixed(2)}</p>
+        <p class="text-[10px] num-feat mt-0.5 ${up ? 'accent' : 'text-neutral-500'}">${up ? '+' : ''}${ch.toFixed(2)} (${up ? '+' : ''}${pct.toFixed(2)}%)</p>
+        <svg class="w-full h-7 mt-2" viewBox="0 0 100 28" preserveAspectRatio="none"><polyline points="${buildSparkline(idx.history, 100, 28)}" stroke="${up ? '#BB86FC' : '#a3a3a3'}" stroke-width="1" fill="none"/></svg>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('sectorIndices').innerHTML = FRAME_ORDER.map(s => {
+    const idx = sectorData[s];
+    const ch = idx.current - idx.open;
+    const pct = (ch / idx.open) * 100;
+    const up = ch >= 0;
+    return `
+      <div class="border border-neutral-100 p-3 hover:border-accent/30 transition">
+        <div class="flex items-center justify-between mb-1">
+          <p class="text-[10px] uppercase tracking-wider text-neutral-500 font-medium truncate">${fl(s)}</p>
+          <span class="w-2 h-2 rounded-sm shrink-0 ml-1" style="background:${FRAMES[s].color}"></span>
+        </div>
+        <p class="text-base font-medium num-feat tracking-tight">${idx.current.toFixed(2)}</p>
+        <p class="text-[10px] num-feat mt-0.5 ${up ? 'accent' : 'text-neutral-500'}">${up ? '+' : ''}${ch.toFixed(2)} (${up ? '+' : ''}${pct.toFixed(2)}%)</p>
+        <svg class="w-full h-7 mt-2" viewBox="0 0 100 28" preserveAspectRatio="none"><polyline points="${buildSparkline(idx.history, 100, 28)}" stroke="${FRAMES[s].color}" stroke-width="1" fill="none" opacity="${up ? '1' : '0.5'}"/></svg>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('memberStocks').innerHTML = Object.keys(memberStocks).map(id => {
+    const s = memberStocks[id];
+    const ch = s.current - s.open;
+    const pct = (ch / s.open) * 100;
+    const up = ch >= 0;
+    return `
+      <div class="grid grid-cols-12 gap-2 items-center py-2.5 border-b border-neutral-50 last:border-0 px-1">
+        <div class="col-span-3 text-xs font-medium tracking-tight">${s.name}</div>
+        <div class="col-span-3 text-sm num-feat font-medium">${s.current.toFixed(2)}</div>
+        <div class="col-span-3 text-[11px] num-feat ${up ? 'accent' : 'text-neutral-500'}">${up ? '▲' : '▼'} ${up ? '+' : ''}${pct.toFixed(2)}%</div>
+        <div class="col-span-3 text-[11px] num-feat text-neutral-400 text-right">vol ${(s.volume/1000).toFixed(1)}K</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderFrameLegend() {
+  document.getElementById('frameLegend').innerHTML = FRAME_ORDER.map(k => `
+    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm" style="background:${FRAMES[k].color}"></span><span>${fl(k)}</span></span>
+  `).join('');
+}
+function renderFrameCompass() {
+  document.getElementById('frameCompass').innerHTML = REGION_ORDER.map(region => {
+    const data = frameCompass[region];
+    const top = FRAME_ORDER.map(k => [k, data[k]]).sort((a,b) => b[1] - a[1])[0];
+    return `
+      <div class="grid grid-cols-12 gap-3 items-center">
+        <div class="col-span-4 sm:col-span-3 lg:col-span-2">
+          <p class="text-sm font-medium tracking-tight">${rl(region)}</p>
+          <p class="text-[10px] text-neutral-400 mt-0.5">${t('frameTop')} · <span class="accent">${fl(top[0])} ${top[1]}%</span></p>
+        </div>
+        <div class="col-span-8 sm:col-span-9 lg:col-span-10">
+          <div class="flex h-8 overflow-hidden rounded-sm">
+            ${FRAME_ORDER.map((cat, i) => `<div class="frame-bar flex items-center justify-center text-[10px] text-white font-medium num-feat overflow-hidden" style="width:${data[cat]}%; background:${FRAMES[cat].color}; ${i < FRAME_ORDER.length - 1 ? 'box-shadow: inset -1px 0 0 white;' : ''}" title="${rl(region)} · ${fl(cat)}: ${data[cat]}%">${data[cat] >= 5 ? data[cat]+'%' : ''}</div>`).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+function renderMemberLegend() {
+  document.getElementById('memberLegend').innerHTML = MEMBERS.map(m => `
+    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm" style="background:${m.color}"></span><span>${m.label}</span></span>
+  `).join('');
+}
+function renderMemberSpotlight() {
+  document.getElementById('memberSpotlight').innerHTML = REGION_ORDER.map(region => {
+    const data = memberData[region];
+    const top = MEMBERS.map(m => [m, data[m.id]]).sort((a,b) => b[1] - a[1])[0];
+    return `
+      <div class="grid grid-cols-12 gap-3 items-center">
+        <div class="col-span-4 sm:col-span-3 lg:col-span-2">
+          <p class="text-sm font-medium tracking-tight">${rl(region)}</p>
+          <p class="text-[10px] text-neutral-400 mt-0.5">${t('frameTop')} · <span class="accent">${top[0].label} ${top[1]}%</span></p>
+        </div>
+        <div class="col-span-8 sm:col-span-9 lg:col-span-10">
+          <div class="flex h-8 overflow-hidden rounded-sm">
+            ${MEMBERS.map((m, i) => { const v = data[m.id]; return `<div class="frame-bar flex items-center justify-center text-[10px] text-white font-medium num-feat overflow-hidden" style="width:${v}%; background:${m.color}; ${i < MEMBERS.length - 1 ? 'box-shadow: inset -1px 0 0 white;' : ''}" title="${rl(region)} · ${m.label}: ${v}%">${v >= 5 ? v+'%' : ''}</div>`; }).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+function renderEventTimeline() {
+  document.getElementById('eventTimeline').innerHTML = timeLagEvents.map(ev => {
+    const frameColor = FRAMES[ev.frame].color;
+    const maxLag = 8;
+    return `
+      <div>
+        <div class="flex items-center justify-between mb-3 gap-2">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background:${frameColor}"></span>
+            <p class="text-sm font-medium tracking-tight truncate">${t(ev.titleKey)}</p>
+            <span class="text-[9px] px-1.5 py-0.5 rounded shrink-0" style="background:${frameColor}1a; color:${frameColor}">${fl(ev.frame)}</span>
+          </div>
+          <span class="text-[10px] text-neutral-400 shrink-0">${t('timeLagOriginLabel')} <span class="accent font-medium">${rl(ev.origin)}</span></span>
+        </div>
+        <div class="relative h-10">
+          <div class="absolute top-1/2 left-0 right-0 h-px bg-neutral-200"></div>
+          ${Object.keys(ev.timeline).map(region => {
+            const lag = ev.timeline[region];
+            const pct = (lag / maxLag) * 96 + 2;
+            const isOrigin = region === ev.origin;
+            return `<div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 group" style="left: ${pct}%">
+              <div class="${isOrigin ? 'w-3.5 h-3.5 bg-accent ring-2 ring-accent/25' : 'w-2.5 h-2.5 bg-white border border-neutral-500'} rounded-full cursor-pointer relative z-10" title="${rl(region)}: +${lag}h"></div>
+              <div class="absolute top-5 left-1/2 -translate-x-1/2 text-[9px] num-feat whitespace-nowrap pointer-events-none ${isOrigin ? 'accent font-medium' : 'text-neutral-500'}">${rs(region)}<span class="text-neutral-400 ml-0.5">+${lag}h</span></div>
+            </div>`;
+          }).join('')}
+        </div>
+        <div class="flex justify-between mt-7 text-[9px] text-neutral-400 num-feat"><span>0h</span><span>${maxLag}h</span></div>
+      </div>
+    `;
+  }).join('');
+}
+function renderOriginFreq() {
+  const total = Object.values(originFreq).reduce((s,v) => s+v, 0);
+  const sorted = Object.keys(originFreq).sort((a,b) => originFreq[b] - originFreq[a]);
+  document.getElementById('originFreq').innerHTML = sorted.map(region => {
+    const v = originFreq[region];
+    const pct = (v / total) * 100;
+    return `
+      <div class="grid grid-cols-12 gap-3 items-center text-xs">
+        <div class="col-span-4 sm:col-span-3 lg:col-span-2 text-neutral-700 font-medium tracking-tight">${rl(region)}</div>
+        <div class="col-span-6 sm:col-span-7 lg:col-span-8">
+          <div class="h-5 bg-neutral-50 relative rounded-sm overflow-hidden"><div class="h-full ${v === 0 ? 'bg-neutral-200' : 'bg-accent'}" style="width: ${Math.max(pct, 2)}%"></div></div>
+        </div>
+        <div class="col-span-2 text-right num-feat ${v === 0 ? 'text-neutral-400' : 'text-neutral-700 font-medium'}">${v}/${total}</div>
+      </div>
+    `;
+  }).join('');
+}
+function renderTexture() {
+  document.getElementById('textureHeatmap').innerHTML = TEXTURE_METRICS.map(metric => {
+    const values = REGION_ORDER.map(r => textureData[r][metric.id]);
+    const max = Math.max(...values), min = Math.min(...values);
+    return `
+      <div class="grid grid-cols-[150px_repeat(6,1fr)] gap-2 items-center py-1.5">
+        <div>
+          <p class="text-sm font-medium tracking-tight leading-tight">${t(metric.keyKo)}</p>
+          <p class="text-[9px] text-neutral-400 mt-0.5 leading-tight">${t(metric.keyDesc)}</p>
+        </div>
+        ${REGION_ORDER.map(r => {
+          const v = textureData[r][metric.id];
+          const norm = max === min ? 0.5 : (v - min) / (max - min);
+          const alpha = 0.12 + norm * 0.85;
+          const isMax = v === max;
+          return `<div class="h-12 flex items-center justify-center text-[12px] num-feat font-medium ${isMax ? 'ring-2 ring-accent ring-offset-1' : ''}" style="background: rgba(187, 134, 252, ${alpha}); color: ${alpha > 0.55 ? 'white' : '#222'}" title="${rl(r)}: ${v}">${v}</div>`;
+        }).join('')}
+      </div>
+    `;
+  }).join('');
+  document.getElementById('signatureWords').innerHTML = REGION_ORDER.map(r => `
+    <div class="border border-neutral-100 p-3 hover:border-accent/30 transition">
+      <div class="flex items-baseline justify-between mb-2 gap-2">
+        <p class="text-xs font-medium tracking-tight">${rl(r)}</p>
+        <p class="text-[9px] text-neutral-400 truncate">${signatureWords[r].lang}</p>
+      </div>
+      <div class="flex flex-wrap gap-1">
+        ${signatureWords[r].words.map(w => `<span class="text-[11px] px-1.5 py-0.5 bg-neutral-50 rounded text-neutral-700 font-light whitespace-nowrap">${w}</span>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+function renderRegionTabs() {
+  document.getElementById('regionTabs').innerHTML = REGION_ORDER.map(r => `
+    <button data-region="${r}" class="region-tab whitespace-nowrap px-4 py-2 text-sm border-b-2 ${r === currentRegion ? 'border-accent accent' : 'border-transparent text-neutral-500 hover:text-neutral-900'}">${rl(r)}</button>
+  `).join('');
+  document.querySelectorAll('.region-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentRegion = btn.dataset.region;
+      renderRegionTabs();
+      renderNews(currentRegion);
+    });
+  });
+}
+function renderNews(region) {
+  const list = [...newsData[region]].sort((a,b) => b.comments - a.comments);
+  document.getElementById('newsList').innerHTML = list.map(n => {
+    const f = FRAMES[n.frame];
+    return `
+      <article class="fade-in p-4 border border-neutral-100 hover:border-neutral-200 hover-lift">
+        <div class="flex items-start justify-between gap-3 mb-2">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="text-[10px] uppercase tracking-wider accent font-medium truncate">${n.outlet}</span>
+            <span class="text-[9px] px-1.5 py-0.5 rounded whitespace-nowrap" style="background:${f.color}1a; color:${f.color}">${fl(n.frame)}</span>
+          </div>
+          <span class="text-[10px] text-neutral-400 num-feat shrink-0">${n.time}</span>
+        </div>
+        <h3 class="text-[15px] leading-snug font-normal mb-3">${n.title}</h3>
+        <div class="flex items-center gap-4 text-xs text-neutral-500 num-feat flex-wrap">
+          <span>${t('newsViews')} <span class="text-neutral-700">${fmtKo(n.views)}</span></span>
+          <span class="flex items-center gap-1"><span class="w-1 h-1 rounded-full bg-accent"></span>${t('newsComments')} <span class="text-neutral-700 font-medium">${n.comments.toLocaleString()}</span></span>
+          <span class="ml-auto text-[10px] text-neutral-400">${t('newsDensity')} ${ratio(n.comments, n.views)}</span>
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+function renderHotVideos() {
+  document.getElementById('hotVideos').innerHTML = hotVideos.map(v => `
+    <div class="fade-in cursor-pointer hover-lift video-trigger" data-vid="${v.id}" data-cap="${v.title}">
+      <div class="video-card bg-neutral-100 mb-2 overflow-hidden relative group">
+        <img src="https://i.ytimg.com/vi/${v.id}/hqdefault.jpg" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg,#f5f5f5,#e5e5e5)';">
+        <div class="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/20 transition">
+          <div class="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center"><span class="accent text-lg ml-1">▶</span></div>
+        </div>
+      </div>
+      <p class="text-[13px] leading-snug font-normal mb-1 line-clamp-2">${v.title}</p>
+      <p class="text-[11px] text-neutral-400 mb-1">${v.channel} · ${v.hours}h</p>
+      <div class="flex gap-3 text-[11px] text-neutral-500 num-feat"><span>${fmt(v.views)} views</span><span class="accent">${fmt(v.comments)} 💬</span></div>
+    </div>
+  `).join('');
+}
+function renderShorts() {
+  document.getElementById('shortsGrid').innerHTML = shortsData.map(s => `
+    <div class="fade-in cursor-pointer hover-lift video-trigger" data-vid="${s.id}" data-cap="${s.title}">
+      <div class="shorts-card bg-gradient-to-br from-neutral-100 to-neutral-200 mb-2 overflow-hidden relative group">
+        <img src="https://i.ytimg.com/vi/${s.id}/hqdefault.jpg" class="w-full h-full object-cover opacity-90" onerror="this.style.display='none';">
+        <div class="absolute top-2 left-2 text-[9px] uppercase tracking-widest text-white/90 bg-black/30 px-1.5 py-0.5 rounded">SHORTS</div>
+        <div class="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/80 to-transparent"><p class="text-white text-[10px] num-feat">${fmt(s.views)} · <span class="accent">${fmt(s.comments)}💬</span></p></div>
+        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/30 transition"><span class="text-white text-2xl">▶</span></div>
+      </div>
+      <p class="text-[11px] leading-tight line-clamp-2">${s.title}</p>
+    </div>
+  `).join('');
+}
+function renderArchive() {
+  document.getElementById('archive').innerHTML = archiveData.map(y => `
+    <details class="group">
+      <summary class="flex items-center justify-between py-5 hover:bg-neutral-50/50 px-2 transition">
+        <div class="flex items-baseline gap-6">
+          <span class="text-2xl font-light num-feat tracking-tight ${y.year === 2026 ? 'accent' : ''}">${y.year}</span>
+          <span class="text-sm text-neutral-700 font-normal">${y.album}</span>
+        </div>
+        <span class="acc-icon text-neutral-300 text-xl font-light">+</span>
+      </summary>
+      <div class="px-2 pb-6 pl-2">
+        <p class="text-sm text-neutral-500 leading-relaxed mb-4 max-w-2xl">${y.note}</p>
+        <ul class="space-y-2">
+          ${y.songs.map(s => `<li class="flex items-center gap-3"><button class="video-trigger w-7 h-7 rounded-full border border-neutral-200 flex items-center justify-center text-[10px] accent hover:bg-accent hover:text-white hover:border-accent transition" data-vid="${s.videoId}" data-cap="${y.year} · ${s.title}">▶</button><span class="text-sm font-light">${s.title}</span></li>`).join('')}
+        </ul>
+      </div>
+    </details>
+  `).join('');
+}
+
+function renderAll() {
+  applyStaticI18n();
+  renderTextureHeader();
+  renderIndexBoard();
+  renderFrameLegend();
+  renderFrameCompass();
+  renderMemberLegend();
+  renderMemberSpotlight();
+  renderEventTimeline();
+  renderOriginFreq();
+  renderTexture();
+  renderRegionTabs();
+  renderNews(currentRegion);
+  renderHotVideos();
+  renderShorts();
+  renderArchive();
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-tab').forEach(b => {
+    if (b.dataset.lang === lang) {
+      b.classList.add('accent', 'font-medium');
+      b.classList.remove('text-neutral-400');
+    } else {
+      b.classList.remove('accent', 'font-medium');
+      b.classList.add('text-neutral-400');
+    }
+  });
+  renderAll();
+}
+
+// ========== EVENTS ==========
+function bindLangTabs() {
+  document.querySelectorAll('.lang-tab').forEach(b => {
+    b.addEventListener('click', () => setLang(b.dataset.lang));
+  });
+}
+function bindVideoTriggers() {
+  document.body.addEventListener('click', (e) => {
+    const tr = e.target.closest('.video-trigger');
+    if (!tr) return;
+    document.getElementById('videoFrame').src = `https://www.youtube.com/embed/${tr.dataset.vid}?autoplay=1&rel=0`;
+    document.getElementById('videoCaption').textContent = tr.dataset.cap || '';
+    const m = document.getElementById('videoModal');
+    m.classList.remove('hidden'); m.classList.add('flex');
+  });
+  document.getElementById('closeModal').addEventListener('click', closeModal);
+  document.getElementById('videoModal').addEventListener('click', (e) => { if (e.target.id === 'videoModal') closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+}
+function closeModal() {
+  document.getElementById('videoFrame').src = '';
+  const m = document.getElementById('videoModal');
+  m.classList.add('hidden'); m.classList.remove('flex');
+}
+
+// ========== INIT ==========
+async function loadData() {
+  try {
+    const res = await fetch('./data/today.json');
+    if (!res.ok) throw new Error('not available');
+    const data = await res.json();
+    if (data.bci) Object.assign(indexData.BCI, data.bci);
+    if (data.regional) for (const r in data.regional) {
+      if (indexData[r]) Object.assign(indexData[r], data.regional[r]);
+    }
+    if (data.sectors) for (const s in data.sectors) {
+      if (sectorData[s]) Object.assign(sectorData[s], data.sectors[s]);
+    }
+    if (data.members) for (const m in data.members) {
+      if (memberStocks[m]) Object.assign(memberStocks[m], data.members[m]);
+    }
+    if (data.frameCompass) Object.assign(frameCompass, data.frameCompass);
+    if (data.memberSpotlight) Object.assign(memberData, data.memberSpotlight);
+    if (data.newsData) {
+      for (const r in data.newsData) {
+        if (Array.isArray(data.newsData[r]) && data.newsData[r].length) {
+          newsData[r] = data.newsData[r];
+        }
+      }
+    }
+    if (data.bci && data.bci.volume) bciVolume = data.bci.volume;
+    Object.values(indexData).forEach(idx => { idx.history = []; });
+    Object.values(sectorData).forEach(idx => { idx.history = []; });
+    initIndexHistory();
+    if (data.date) {
+      const dateEls = document.querySelectorAll('.num-feat');
+      dateEls.forEach(el => {
+        if (el.textContent.match(/^20\d\d\.\d\d\.\d\d/)) {
+          el.textContent = data.date.replace(/-/g, '.') + ' (' + new Date(data.date).toLocaleDateString('en-US', {weekday: 'short'}).toUpperCase() + ')';
+        }
+      });
+    }
+    console.info('[BTS Wire] loaded', data.date, '·', data.totalItems, 'items');
+  } catch (e) {
+    console.info('[BTS Wire] using dummy data (today.json not found — see ops guide)');
+  }
+}
+
+initIndexHistory();
+bindLangTabs();
+bindVideoTriggers();
+setLang('ko');
+loadData().then(() => setLang(currentLang)).catch(() => {});
+</script>
+</body>
+</html>
