@@ -1,0 +1,10 @@
+pitt_ads_dataset/
+*.tar.gz
+*.index
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+.DS_Store
+Thumbs.db
