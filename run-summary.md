@@ -1,15 +1,20 @@
-# Run summary — r/ClaudeAI scrape
+# Run summary: r/ClaudeAI scrape
 
-- **Source:** https://www.reddit.com/r/ClaudeAI/
-- **Checked at:** 2026-10-24T09:07:15Z
-- **Status:** `blocked:network_policy_denied`. The run did not finish.
-- **Tool:** Playwright Chromium in a cloud container. ego (lite) can't be used here because it only runs on macOS/Windows. You approved this fallback, so the data is not recorded in an ego (lite) Space.
-- **Limits planned:** up to 50 posts from the feed; up to 10 threads opened; up to 50 rendered comments per thread.
-- **Recorded:** 0 posts, 0 comments. `reddit-data.csv` holds a single `row_type=status` row.
+- **Source:** https://www.reddit.com/r/ClaudeAI/ (default "Best" feed, logged out)
+- **Checked at:** 2026-10-24T09:18:52Z
+- **Status:** `ok`. The run finished. Reddit served the pages and showed no robot check, sign-in wall or rate limit.
+- **Tool:** Playwright Chromium (pre-installed) in a cloud container, through the environment proxy. ego (lite) was not installed because it does not run on Linux. The data is not in an ego (lite) Space.
+- **Limits:** up to 50 posts from the feed; the first 10 threads opened; up to 50 rendered comments per thread.
+- **Recorded:** 1 status row, 50 posts, 268 comments in `reddit-data.csv`.
+- **Script:** `scrape-reddit.js` (`node scrape-reddit.js reddit-data.csv`).
 
-## What happened
-The cloud environment's outbound network policy refused the connection to `www.reddit.com`. The proxy answered 403 to CONNECT, and Chromium showed `ERR_TUNNEL_CONNECTION_FAILED`. Reddit never served a page, so this is not a Reddit sign-in wall, CAPTCHA, or rate limit. It is not an empty feed either.
+## Notes on the data
+- The 2 pinned community highlights and promoted posts were skipped. Duplicates were removed.
+- `text` for a post is the feed preview. For the 10 opened threads it is the full body. 22 posts have `not displayed` because they are link, image or video posts with no text body.
+- Comments are the ones rendered on first load plus a few scrolls. Collapsed replies and "more replies" were not expanded. None of the 10 threads hit the 50-comment cap.
+- 13 comments have `text = not displayed`: they are image or GIF-only comments, or deleted (`[deleted]`).
+- `date_or_relative_time` is the ISO timestamp from the page. `note` gives the comment depth (0 = top level).
+- `score` is the vote count Reddit showed when the page was loaded.
 
-## Needs your review
-- Allow `www.reddit.com` (and `reddit.com`) under the environment's Network access setting, then re-run. Or run the task locally with ego (lite).
-- If the rerun works from this datacenter IP, Reddit may still show a robot check. If it does, the run will stop and record it.
+## Previous attempt
+The earlier run (commit 91409b0) was blocked by the environment's network policy (proxy 403 on www.reddit.com). That restriction no longer applies.
